@@ -1,0 +1,1699 @@
+{
+  "_meta": {
+    "patch": "15.8",
+    "note": "Seed data — counter scores range from -3 (hard countered) to +3 (hard counter them)"
+  },
+  "class_counters": {
+    "assassin":   {"strong_vs": ["mage", "marksman", "enchanter"], "weak_vs": ["bruiser", "vanguard", "tank"]},
+    "bruiser":    {"strong_vs": ["assassin", "tank"],              "weak_vs": ["marksman", "skirmisher"]},
+    "tank":       {"strong_vs": ["assassin"],                      "weak_vs": ["marksman", "bruiser", "skirmisher"]},
+    "mage":       {"strong_vs": ["tank", "bruiser"],               "weak_vs": ["assassin"]},
+    "marksman":   {"strong_vs": ["tank", "bruiser"],               "weak_vs": ["assassin", "vanguard"]},
+    "enchanter":  {"strong_vs": ["bruiser"],                       "weak_vs": ["assassin", "vanguard"]},
+    "vanguard":   {"strong_vs": ["marksman", "mage", "enchanter"], "weak_vs": ["bruiser", "skirmisher"]},
+    "skirmisher": {"strong_vs": ["bruiser", "tank", "vanguard"],   "weak_vs": ["marksman"]},
+    "catcher":    {"strong_vs": ["marksman", "mage"],              "weak_vs": ["vanguard", "bruiser"]}
+  },
+  "champions": {
+    "Aatrox": {
+      "roles": ["top"],
+      "classes": ["bruiser"],
+      "tier": {"top": "S"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Conditioning", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Eclipse", "Black Cleaver", "Sterak's Gage"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Serylda's Grudge"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 7.2
+        }
+      },
+      "matchups": {"Fiora": -2, "Irelia": -1, "Quinn": -2, "Malphite": 2, "Ornn": 2, "Cho'Gath": 1, "Sion": 2, "Gangplank": 1},
+      "synergies": ["Jarvan IV", "Orianna", "Amumu"]
+    },
+    "Ahri": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Cheap Shot", "Eyeball Collection", "Ultimate Hunter", "Manaflow Band", "Transcendence"],
+          "rune_trees": ["Domination", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Malignance", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Zhonya's Hourglass", "Banshee's Veil", "Void Staff"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > W > E",
+          "wr": 52.1, "pr": 8.5
+        }
+      },
+      "matchups": {"Zed": -1, "Fizz": -1, "Yasuo": -1, "Veigar": 2, "Lux": 1, "Twisted Fate": 2},
+      "synergies": ["Jarvan IV", "Amumu", "Miss Fortune"]
+    },
+    "Akali": {
+      "roles": ["middle"],
+      "classes": ["assassin"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Sudden Impact", "Eyeball Collection", "Ultimate Hunter", "Presence of Mind", "Legend: Haste"],
+          "rune_trees": ["Domination", "Precision"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Hextech Rocketbelt", "Shadowflame", "Zhonya's Hourglass"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rabadon's Deathcap", "Void Staff", "Lich Bane"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 50.2, "pr": 6.8
+        }
+      },
+      "matchups": {"Galio": -2, "Malzahar": -1, "Annie": -1, "Veigar": 2, "Lux": 2, "Xerath": 1, "Twisted Fate": 2},
+      "synergies": ["Jarvan IV", "Leona", "Amumu"]
+    },
+    "Amumu": {
+      "roles": ["jungle"],
+      "classes": ["vanguard", "tank"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Aftershock", "Font of Life", "Conditioning", "Unflinching", "Cheap Shot", "Ultimate Hunter"],
+          "rune_trees": ["Resolve", "Domination"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Scorchclaw Pup"],
+          "core": ["Hollow Radiance", "Jak'Sho, The Protean", "Thornmail"],
+          "boots": "Mercury's Treads",
+          "situational": ["Abyssal Mask", "Randuin's Omen", "Spirit Visage"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 52.8, "pr": 5.1
+        }
+      },
+      "matchups": {"Lee Sin": -2, "Kindred": -1, "Graves": -1, "Master Yi": 2, "Karthus": 2, "Evelynn": 1},
+      "synergies": ["Yasuo", "Miss Fortune", "Aatrox", "Orianna"]
+    },
+    "Aphelios": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Lethal Tempo", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Absolute Focus", "Gathering Storm"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Phantom Dancer", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Bloodthirster", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 50.8, "pr": 5.2
+        }
+      },
+      "matchups": {"Draven": -2, "Lucian": -1, "Caitlyn": -1, "Jinx": 1, "Kog'Maw": 1, "Sivir": 1},
+      "synergies": ["Thresh", "Lulu", "Nautilus"]
+    },
+    "Ashe": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "B"},
+      "builds": {
+        "bottom": {
+          "runes": ["Lethal Tempo", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Approach Velocity", "Magical Footwear"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Runaan's Hurricane", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Blade of the Ruined King", "Lord Dominik's Regards", "Wit's End"],
+          "spells": ["Flash", "Heal"],
+          "skills": "W > Q > E",
+          "wr": 51.0, "pr": 6.1
+        }
+      },
+      "matchups": {"Draven": -2, "Lucian": -1, "Samira": -2, "Jinx": 1, "Kog'Maw": 1, "Ezreal": 1},
+      "synergies": ["Braum", "Leona", "Rell"]
+    },
+    "Aurelion Sol": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Gathering Storm", "Taste of Blood", "Treasure Hunter"],
+          "rune_trees": ["Sorcery", "Domination"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Rod of Ages", "Liandry's Torment", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rylai's Crystal Scepter", "Zhonya's Hourglass", "Void Staff"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 52.5, "pr": 4.3
+        }
+      },
+      "matchups": {"Fizz": -2, "Zed": -2, "Akali": -1, "Malzahar": 1, "Lux": 1, "Veigar": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Leona"]
+    },
+    "Blitzcrank": {
+      "roles": ["utility"],
+      "classes": ["vanguard", "catcher"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Aftershock", "Font of Life", "Bone Plating", "Unflinching", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Resolve", "Inspiration"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Relic Shield", "Health Potion"],
+          "core": ["Locket of the Iron Solari", "Knight's Vow", "Zeke's Convergence"],
+          "boots": "Boots of Swiftness",
+          "situational": ["Frozen Heart", "Abyssal Mask", "Thornmail"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 52.0, "pr": 7.4
+        }
+      },
+      "matchups": {"Morgana": -3, "Sivir": -2, "Leona": -1, "Sona": 3, "Soraka": 2, "Lux": 1, "Jinx": 2},
+      "synergies": ["Jinx", "Draven", "Samira"]
+    },
+    "Brand": {
+      "roles": ["utility", "jungle"],
+      "classes": ["mage"],
+      "tier": {"utility": "A", "jungle": "B"},
+      "builds": {
+        "utility": {
+          "runes": ["Dark Harvest", "Cheap Shot", "Eyeball Collection", "Ultimate Hunter", "Manaflow Band", "Scorch"],
+          "rune_trees": ["Domination", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Liandry's Torment", "Rylai's Crystal Scepter", "Shadowflame"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Rabadon's Deathcap", "Zhonya's Hourglass"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "W > E > Q",
+          "wr": 51.8, "pr": 5.5
+        }
+      },
+      "matchups": {"Leona": -1, "Nautilus": -1, "Alistar": -1, "Sona": 2, "Soraka": 2, "Yuumi": 2},
+      "synergies": ["Ashe", "Jhin", "Varus"]
+    },
+    "Briar": {
+      "roles": ["jungle"],
+      "classes": ["bruiser", "assassin"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Last Stand", "Sudden Impact", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Blade of the Ruined King", "Eclipse", "Sterak's Gage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > W > E",
+          "wr": 51.4, "pr": 5.8
+        }
+      },
+      "matchups": {"Amumu": -1, "Rammus": -2, "Sejuani": -1, "Karthus": 2, "Evelynn": 1, "Kindred": 1},
+      "synergies": ["Leona", "Nautilus", "Orianna"]
+    },
+    "Caitlyn": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "S"},
+      "builds": {
+        "bottom": {
+          "runes": ["Fleet Footwork", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Absolute Focus", "Gathering Storm"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Rapid Firecannon", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Bloodthirster", "The Collector"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 52.4, "pr": 12.1
+        }
+      },
+      "matchups": {"Sivir": -1, "Samira": -1, "Draven": -1, "Vayne": 2, "Kog'Maw": 2, "Aphelios": 1, "Jinx": 1},
+      "synergies": ["Lux", "Morgana", "Karma"]
+    },
+    "Camille": {
+      "roles": ["top"],
+      "classes": ["skirmisher"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Grasp of the Undying", "Shield Bash", "Bone Plating", "Overgrowth", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Resolve", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Shield"],
+          "core": ["Trinity Force", "Ravenous Hydra", "Sterak's Gage"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 51.0, "pr": 5.4
+        }
+      },
+      "matchups": {"Jax": -2, "Darius": -1, "Renekton": -1, "Gangplank": 2, "Kayle": 2, "Vladimir": 1},
+      "synergies": ["Orianna", "Jarvan IV", "Lulu"]
+    },
+    "Darius": {
+      "roles": ["top"],
+      "classes": ["bruiser"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Tenacity", "Last Stand", "Second Wind", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Trinity Force", "Sterak's Gage", "Dead Man's Plate"],
+          "boots": "Mercury's Treads",
+          "situational": ["Death's Dance", "Force of Nature", "Randuin's Omen"],
+          "spells": ["Flash", "Ghost"],
+          "skills": "Q > E > W",
+          "wr": 51.8, "pr": 6.9
+        }
+      },
+      "matchups": {"Quinn": -2, "Vayne": -3, "Kennen": -2, "Nasus": 2, "Garen": 1, "Malphite": 1, "Kayle": 2},
+      "synergies": ["Yuumi", "Lulu", "Orianna"]
+    },
+    "Diana": {
+      "roles": ["jungle", "middle"],
+      "classes": ["assassin", "mage"],
+      "tier": {"jungle": "A", "middle": "B"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Coup de Grace", "Sudden Impact", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Scorchclaw Pup"],
+          "core": ["Hextech Rocketbelt", "Nashor's Tooth", "Zhonya's Hourglass"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rabadon's Deathcap", "Banshee's Veil", "Void Staff"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > W > E",
+          "wr": 51.6, "pr": 5.3
+        }
+      },
+      "matchups": {"Lee Sin": -1, "Graves": -1, "Elise": -1, "Karthus": 2, "Evelynn": 1, "Master Yi": 1},
+      "synergies": ["Yasuo", "Yone", "Jarvan IV"]
+    },
+    "Draven": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Last Stand", "Taste of Blood", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Eclipse", "The Collector", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Bloodthirster", "Lord Dominik's Regards", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 51.2, "pr": 5.0
+        }
+      },
+      "matchups": {"Caitlyn": 1, "Ezreal": 1, "Ashe": 2, "Sivir": -1, "Tristana": -1, "Vayne": -1},
+      "synergies": ["Leona", "Nautilus", "Blitzcrank"]
+    },
+    "Ekko": {
+      "roles": ["jungle", "middle"],
+      "classes": ["assassin"],
+      "tier": {"jungle": "A", "middle": "B"},
+      "builds": {
+        "jungle": {
+          "runes": ["Dark Harvest", "Sudden Impact", "Eyeball Collection", "Treasure Hunter", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Domination", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Hextech Rocketbelt", "Lich Bane", "Zhonya's Hourglass"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rabadon's Deathcap", "Void Staff", "Banshee's Veil"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 51.8, "pr": 6.0
+        }
+      },
+      "matchups": {"Lee Sin": -1, "Kha'Zix": -1, "Elise": -1, "Karthus": 2, "Amumu": 1, "Master Yi": 1},
+      "synergies": ["Leona", "Nautilus", "Jarvan IV"]
+    },
+    "Ezreal": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Conqueror", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Manaflow Band", "Transcendence"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Muramana", "Trinity Force", "Serylda's Grudge"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Frozen Heart", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 14.8
+        }
+      },
+      "matchups": {"Draven": -1, "Lucian": -1, "Caitlyn": -1, "Vayne": 1, "Kog'Maw": 1, "Jinx": 1},
+      "synergies": ["Karma", "Nami", "Yuumi"]
+    },
+    "Fiora": {
+      "roles": ["top"],
+      "classes": ["skirmisher"],
+      "tier": {"top": "S"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Demolish", "Bone Plating"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Ravenous Hydra", "Trinity Force", "Death's Dance"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Sterak's Gage", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 52.0, "pr": 5.9
+        }
+      },
+      "matchups": {"Quinn": -1, "Kennen": -1, "Malphite": -1, "Aatrox": 2, "Sion": 3, "Ornn": 2, "Mordekaiser": 2, "Garen": 1},
+      "synergies": ["Jarvan IV", "Orianna", "Lulu"]
+    },
+    "Fizz": {
+      "roles": ["middle"],
+      "classes": ["assassin"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Sudden Impact", "Eyeball Collection", "Treasure Hunter", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Domination", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Hextech Rocketbelt", "Lich Bane", "Zhonya's Hourglass"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rabadon's Deathcap", "Void Staff", "Banshee's Veil"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "E > Q > W",
+          "wr": 52.2, "pr": 5.6
+        }
+      },
+      "matchups": {"Galio": -2, "Lissandra": -2, "Malzahar": -1, "Twisted Fate": 2, "Veigar": 2, "Lux": 2, "Xerath": 2},
+      "synergies": ["Leona", "Nautilus", "Amumu"]
+    },
+    "Galio": {
+      "roles": ["middle"],
+      "classes": ["vanguard", "mage"],
+      "tier": {"middle": "B"},
+      "builds": {
+        "middle": {
+          "runes": ["Aftershock", "Shield Bash", "Conditioning", "Unflinching", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Resolve", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Magic Resist"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Hollow Radiance", "Zhonya's Hourglass", "Banshee's Veil"],
+          "boots": "Mercury's Treads",
+          "situational": ["Abyssal Mask", "Force of Nature", "Thornmail"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 51.0, "pr": 3.5
+        }
+      },
+      "matchups": {"Yone": -1, "Cassiopeia": -1, "Azir": -1, "Fizz": 2, "Akali": 2, "Katarina": 2, "LeBlanc": 1},
+      "synergies": ["Jarvan IV", "Camille", "Pantheon"]
+    },
+    "Garen": {
+      "roles": ["top"],
+      "classes": ["bruiser"],
+      "tier": {"top": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Tenacity", "Last Stand", "Second Wind", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Shield"],
+          "core": ["Stridebreaker", "Dead Man's Plate", "Force of Nature"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Mortal Reminder", "Sterak's Gage", "Randuin's Omen"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 52.5, "pr": 7.0
+        }
+      },
+      "matchups": {"Vayne": -3, "Quinn": -2, "Teemo": -2, "Yasuo": 1, "Yone": 1, "Akali": 1, "Nasus": 1},
+      "synergies": ["Yuumi", "Lulu", "Orianna"]
+    },
+    "Graves": {
+      "roles": ["jungle"],
+      "classes": ["marksman"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Fleet Footwork", "Triumph", "Legend: Alacrity", "Coup de Grace", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Eclipse", "Black Cleaver", "Serylda's Grudge"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Maw of Malmortius", "Death's Dance", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 51.4, "pr": 6.8
+        }
+      },
+      "matchups": {"Rammus": -2, "Sejuani": -1, "Amumu": -1, "Karthus": 2, "Evelynn": 2, "Lillia": 1},
+      "synergies": ["Leona", "Nautilus", "Thresh"]
+    },
+    "Gwen": {
+      "roles": ["top"],
+      "classes": ["skirmisher"],
+      "tier": {"top": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Last Stand", "Bone Plating", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Riftmaker", "Nashor's Tooth", "Zhonya's Hourglass"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Rabadon's Deathcap", "Void Staff", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 49.5, "pr": 3.8
+        }
+      },
+      "matchups": {"Irelia": -2, "Jax": -1, "Renekton": -1, "Ornn": 2, "Malphite": 2, "Sion": 2},
+      "synergies": ["Jarvan IV", "Amumu", "Orianna"]
+    },
+    "Hecarim": {
+      "roles": ["jungle"],
+      "classes": ["bruiser"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Tenacity", "Last Stand", "Nimbus Cloak", "Celerity"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Trinity Force", "Sterak's Gage", "Death's Dance"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Maw of Malmortius", "Spirit Visage", "Dead Man's Plate"],
+          "spells": ["Ghost", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 52.0, "pr": 5.6
+        }
+      },
+      "matchups": {"Kindred": -1, "Lee Sin": -1, "Elise": -1, "Master Yi": 1, "Karthus": 2, "Amumu": 1},
+      "synergies": ["Orianna", "Jarvan IV", "Lulu"]
+    },
+    "Irelia": {
+      "roles": ["top", "middle"],
+      "classes": ["skirmisher"],
+      "tier": {"top": "A", "middle": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Last Stand", "Second Wind", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Blade of the Ruined King", "Trinity Force", "Sterak's Gage"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Wit's End"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 6.2
+        }
+      },
+      "matchups": {"Trundle": -2, "Warwick": -2, "Volibear": -1, "Aatrox": 1, "Gangplank": 2, "Vladimir": 1, "Kennen": 1},
+      "synergies": ["Orianna", "Lulu", "Jarvan IV"]
+    },
+    "Janna": {
+      "roles": ["utility"],
+      "classes": ["enchanter"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Summon Aery", "Manaflow Band", "Transcendence", "Scorch", "Revitalize", "Second Wind"],
+          "rune_trees": ["Sorcery", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Moonstone Renewer", "Staff of Flowing Water", "Redemption"],
+          "boots": "Boots of Swiftness",
+          "situational": ["Ardent Censer", "Mikael's Blessing", "Shurelya's Battlesong"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "W > E > Q",
+          "wr": 53.0, "pr": 5.2
+        }
+      },
+      "matchups": {"Leona": -1, "Nautilus": -1, "Rell": -1, "Sona": 1, "Soraka": 1, "Yuumi": 2},
+      "synergies": ["Jinx", "Kog'Maw", "Aphelios"]
+    },
+    "Jarvan IV": {
+      "roles": ["jungle"],
+      "classes": ["vanguard", "bruiser"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Tenacity", "Last Stand", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Mosstomper Seedling"],
+          "core": ["Eclipse", "Black Cleaver", "Sterak's Gage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 6.4
+        }
+      },
+      "matchups": {"Kindred": -1, "Graves": -1, "Lee Sin": -1, "Karthus": 2, "Evelynn": 1, "Master Yi": 1},
+      "synergies": ["Yasuo", "Yone", "Aatrox", "Orianna", "Miss Fortune"]
+    },
+    "Jax": {
+      "roles": ["top", "jungle"],
+      "classes": ["skirmisher"],
+      "tier": {"top": "A", "jungle": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Last Stand", "Bone Plating", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Trinity Force", "Blade of the Ruined King", "Sterak's Gage"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Randuin's Omen"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 5.4
+        }
+      },
+      "matchups": {"Malphite": -1, "Kennen": -2, "Akali": -1, "Camille": 2, "Gwen": 1, "Gangplank": 1, "Nasus": 1},
+      "synergies": ["Orianna", "Lulu", "Jarvan IV"]
+    },
+    "Jhin": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Fleet Footwork", "Presence of Mind", "Legend: Alacrity", "Coup de Grace", "Absolute Focus", "Gathering Storm"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["The Collector", "Rapid Firecannon", "Infinity Edge"],
+          "boots": "Boots of Swiftness",
+          "situational": ["Lord Dominik's Regards", "Guardian Angel", "Mortal Reminder"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 52.0, "pr": 10.5
+        }
+      },
+      "matchups": {"Samira": -1, "Draven": -1, "Lucian": -1, "Jinx": 1, "Kog'Maw": 1, "Ashe": 1},
+      "synergies": ["Xerath", "Vel'Koz", "Zyra"]
+    },
+    "Jinx": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "S"},
+      "builds": {
+        "bottom": {
+          "runes": ["Lethal Tempo", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Absolute Focus", "Gathering Storm"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Phantom Dancer", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Bloodthirster", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 52.5, "pr": 11.2
+        }
+      },
+      "matchups": {"Draven": -2, "Lucian": -1, "Caitlyn": -1, "Ezreal": 1, "Kog'Maw": 1, "Ashe": 1},
+      "synergies": ["Lulu", "Thresh", "Blitzcrank"]
+    },
+    "Kai'Sa": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Hail of Blades", "Taste of Blood", "Eyeball Collection", "Treasure Hunter", "Presence of Mind", "Legend: Alacrity"],
+          "rune_trees": ["Domination", "Precision"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Nashor's Tooth", "Rabadon's Deathcap"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Zhonya's Hourglass", "Void Staff", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 12.0
+        }
+      },
+      "matchups": {"Draven": -1, "Caitlyn": -1, "Ashe": -1, "Vayne": 1, "Ezreal": 1, "Kog'Maw": 1},
+      "synergies": ["Nautilus", "Thresh", "Leona"]
+    },
+    "Katarina": {
+      "roles": ["middle"],
+      "classes": ["assassin"],
+      "tier": {"middle": "B"},
+      "builds": {
+        "middle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Coup de Grace", "Sudden Impact", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Hextech Rocketbelt", "Nashor's Tooth", "Shadowflame"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Zhonya's Hourglass", "Rabadon's Deathcap", "Void Staff"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 6.5
+        }
+      },
+      "matchups": {"Galio": -2, "Diana": -1, "Kassadin": -1, "Veigar": 1, "Twisted Fate": 2, "Lux": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Diana"]
+    },
+    "Kha'Zix": {
+      "roles": ["jungle"],
+      "classes": ["assassin"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Dark Harvest", "Sudden Impact", "Eyeball Collection", "Treasure Hunter", "Transcendence", "Waterwalking"],
+          "rune_trees": ["Domination", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Profane Hydra", "Youmuu's Ghostblade", "Edge of Night"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Serylda's Grudge", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > W > E",
+          "wr": 51.8, "pr": 8.4
+        }
+      },
+      "matchups": {"Rammus": -2, "Amumu": -1, "Sejuani": -1, "Karthus": 2, "Evelynn": 1, "Nidalee": 1},
+      "synergies": ["Orianna", "Lulu", "Janna"]
+    },
+    "LeBlanc": {
+      "roles": ["middle"],
+      "classes": ["assassin", "mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Cheap Shot", "Eyeball Collection", "Treasure Hunter", "Manaflow Band", "Transcendence"],
+          "rune_trees": ["Domination", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > W > E",
+          "wr": 50.8, "pr": 5.5
+        }
+      },
+      "matchups": {"Galio": -2, "Kassadin": -1, "Malzahar": -1, "Twisted Fate": 2, "Veigar": 2, "Orianna": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Leona"]
+    },
+    "Lee Sin": {
+      "roles": ["jungle"],
+      "classes": ["bruiser", "assassin"],
+      "tier": {"jungle": "S"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Eclipse", "Black Cleaver", "Sterak's Gage"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 14.2
+        }
+      },
+      "matchups": {"Rammus": -2, "Amumu": 1, "Karthus": 1, "Diana": 1, "Hecarim": 1, "Evelynn": 2},
+      "synergies": ["Yasuo", "Orianna", "Jinx"]
+    },
+    "Leona": {
+      "roles": ["utility"],
+      "classes": ["vanguard"],
+      "tier": {"utility": "S"},
+      "builds": {
+        "utility": {
+          "runes": ["Aftershock", "Font of Life", "Bone Plating", "Unflinching", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Resolve", "Inspiration"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Relic Shield", "Health Potion"],
+          "core": ["Locket of the Iron Solari", "Knight's Vow", "Zeke's Convergence"],
+          "boots": "Mercury's Treads",
+          "situational": ["Thornmail", "Frozen Heart", "Abyssal Mask"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "E > Q > W",
+          "wr": 52.2, "pr": 10.8
+        }
+      },
+      "matchups": {"Morgana": -2, "Janna": 1, "Braum": -1, "Sona": 2, "Yuumi": 2, "Soraka": 1, "Lux": 1},
+      "synergies": ["Kai'Sa", "Samira", "Draven", "Tristana"]
+    },
+    "Lillia": {
+      "roles": ["jungle"],
+      "classes": ["mage"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Coup de Grace", "Celerity", "Waterwalking"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Scorchclaw Pup"],
+          "core": ["Liandry's Torment", "Rylai's Crystal Scepter", "Zhonya's Hourglass"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rabadon's Deathcap", "Void Staff", "Banshee's Veil"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > W > E",
+          "wr": 52.5, "pr": 4.8
+        }
+      },
+      "matchups": {"Lee Sin": -1, "Kha'Zix": -1, "Elise": -1, "Amumu": 1, "Sejuani": 1, "Karthus": 1},
+      "synergies": ["Yasuo", "Miss Fortune", "Orianna"]
+    },
+    "Lucian": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Press the Attack", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Essence Reaver", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Bloodthirster", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > E > W",
+          "wr": 51.0, "pr": 8.5
+        }
+      },
+      "matchups": {"Vayne": -1, "Sivir": -1, "Jinx": 1, "Aphelios": 1, "Kog'Maw": 1, "Ashe": 1},
+      "synergies": ["Nami", "Braum", "Thresh"]
+    },
+    "Lulu": {
+      "roles": ["utility"],
+      "classes": ["enchanter"],
+      "tier": {"utility": "S"},
+      "builds": {
+        "utility": {
+          "runes": ["Summon Aery", "Manaflow Band", "Transcendence", "Scorch", "Revitalize", "Second Wind"],
+          "rune_trees": ["Sorcery", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Moonstone Renewer", "Staff of Flowing Water", "Redemption"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Ardent Censer", "Mikael's Blessing", "Zhonya's Hourglass"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "E > W > Q",
+          "wr": 53.0, "pr": 8.2
+        }
+      },
+      "matchups": {"Zyra": -1, "Brand": -1, "Vel'Koz": -1, "Sona": 1, "Yuumi": 1, "Soraka": 1},
+      "synergies": ["Jinx", "Kog'Maw", "Vayne", "Twitch"]
+    },
+    "Lux": {
+      "roles": ["utility", "middle"],
+      "classes": ["mage"],
+      "tier": {"utility": "A", "middle": "B"},
+      "builds": {
+        "utility": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Scorch", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Sorcery", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 8.1
+        }
+      },
+      "matchups": {"Leona": -1, "Nautilus": -1, "Blitzcrank": -1, "Sona": 1, "Yuumi": 2, "Soraka": 1},
+      "synergies": ["Caitlyn", "Jhin", "Ashe"]
+    },
+    "Malphite": {
+      "roles": ["top"],
+      "classes": ["tank", "vanguard"],
+      "tier": {"top": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Grasp of the Undying", "Shield Bash", "Conditioning", "Overgrowth", "Manaflow Band", "Scorch"],
+          "rune_trees": ["Resolve", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Armor"],
+          "start": ["Doran's Shield"],
+          "core": ["Heartsteel", "Hollow Radiance", "Thornmail"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Randuin's Omen", "Force of Nature", "Frozen Heart"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 52.0, "pr": 5.0
+        }
+      },
+      "matchups": {"Fiora": -2, "Nasus": -1, "Gwen": -2, "Yasuo": 2, "Yone": 2, "Jax": 1, "Camille": 1},
+      "synergies": ["Yasuo", "Miss Fortune", "Jinx"]
+    },
+    "Malzahar": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Summon Aery", "Manaflow Band", "Transcendence", "Scorch", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Sorcery", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Malignance", "Liandry's Torment", "Rylai's Crystal Scepter"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Zhonya's Hourglass", "Void Staff", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "E > Q > W",
+          "wr": 52.5, "pr": 4.2
+        }
+      },
+      "matchups": {"Aurelion Sol": -1, "Cassiopeia": -1, "Anivia": -1, "Fizz": 1, "Katarina": 1, "Yasuo": 1},
+      "synergies": ["Amumu", "Jarvan IV", "Leona"]
+    },
+    "Master Yi": {
+      "roles": ["jungle"],
+      "classes": ["skirmisher"],
+      "tier": {"jungle": "B"},
+      "builds": {
+        "jungle": {
+          "runes": ["Lethal Tempo", "Triumph", "Legend: Alacrity", "Coup de Grace", "Eyeball Collection", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Kraken Slayer", "Blade of the Ruined King", "Guinsoo's Rageblade"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Wit's End", "Death's Dance", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 50.8, "pr": 5.5
+        }
+      },
+      "matchups": {"Rammus": -3, "Amumu": -2, "Jax": -2, "Karthus": 2, "Evelynn": 1, "Lillia": 1},
+      "synergies": ["Lulu", "Taric", "Kayle"]
+    },
+    "Miss Fortune": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Press the Attack", "Presence of Mind", "Legend: Alacrity", "Coup de Grace", "Absolute Focus", "Gathering Storm"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Eclipse", "The Collector", "Lord Dominik's Regards"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Infinity Edge", "Guardian Angel", "Mortal Reminder"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 52.0, "pr": 8.8
+        }
+      },
+      "matchups": {"Samira": -1, "Draven": -1, "Vayne": -1, "Ashe": 1, "Jinx": 1, "Kog'Maw": 1},
+      "synergies": ["Amumu", "Leona", "Nautilus"]
+    },
+    "Mordekaiser": {
+      "roles": ["top"],
+      "classes": ["bruiser", "mage"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Second Wind", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Shield"],
+          "core": ["Riftmaker", "Rylai's Crystal Scepter", "Zhonya's Hourglass"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Spirit Visage", "Thornmail", "Rabadon's Deathcap"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 51.8, "pr": 6.2
+        }
+      },
+      "matchups": {"Fiora": -2, "Vayne": -2, "Gangplank": -1, "Garen": 1, "Sion": 2, "Ornn": 1, "Nasus": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Orianna"]
+    },
+    "Morgana": {
+      "roles": ["utility"],
+      "classes": ["mage", "catcher"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Scorch", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Sorcery", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Zhonya's Hourglass", "Liandry's Torment", "Rylai's Crystal Scepter"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Redemption", "Banshee's Veil", "Void Staff"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > W > E",
+          "wr": 51.5, "pr": 6.5
+        }
+      },
+      "matchups": {"Zyra": -1, "Vel'Koz": -1, "Brand": -1, "Leona": 3, "Blitzcrank": 3, "Nautilus": 2, "Thresh": 2},
+      "synergies": ["Caitlyn", "Jhin", "Jinx"]
+    },
+    "Nami": {
+      "roles": ["utility"],
+      "classes": ["enchanter"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Summon Aery", "Manaflow Band", "Transcendence", "Scorch", "Revitalize", "Second Wind"],
+          "rune_trees": ["Sorcery", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Moonstone Renewer", "Staff of Flowing Water", "Redemption"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Ardent Censer", "Mikael's Blessing", "Zhonya's Hourglass"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "W > E > Q",
+          "wr": 52.5, "pr": 7.0
+        }
+      },
+      "matchups": {"Blitzcrank": -1, "Leona": -1, "Nautilus": -1, "Sona": 1, "Yuumi": 1, "Soraka": 1},
+      "synergies": ["Lucian", "Ezreal", "Kai'Sa"]
+    },
+    "Nautilus": {
+      "roles": ["utility"],
+      "classes": ["vanguard"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Aftershock", "Font of Life", "Bone Plating", "Unflinching", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Resolve", "Inspiration"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Relic Shield", "Health Potion"],
+          "core": ["Locket of the Iron Solari", "Knight's Vow", "Zeke's Convergence"],
+          "boots": "Mercury's Treads",
+          "situational": ["Thornmail", "Frozen Heart", "Abyssal Mask"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 51.2, "pr": 9.0
+        }
+      },
+      "matchups": {"Morgana": -2, "Janna": -1, "Braum": -1, "Sona": 2, "Yuumi": 2, "Soraka": 1},
+      "synergies": ["Kai'Sa", "Aphelios", "Samira"]
+    },
+    "Orianna": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Gathering Storm", "Taste of Blood", "Treasure Hunter"],
+          "rune_trees": ["Sorcery", "Domination"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 51.5, "pr": 5.2
+        }
+      },
+      "matchups": {"Fizz": -1, "Zed": -1, "Akali": -1, "Malzahar": 1, "Twisted Fate": 1, "Veigar": 1},
+      "synergies": ["Jarvan IV", "Aatrox", "Hecarim", "Malphite", "Camille"]
+    },
+    "Pyke": {
+      "roles": ["utility"],
+      "classes": ["assassin"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Hail of Blades", "Cheap Shot", "Zombie Ward", "Treasure Hunter", "Second Wind", "Unflinching"],
+          "rune_trees": ["Domination", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Relic Shield", "Health Potion"],
+          "core": ["Profane Hydra", "Youmuu's Ghostblade", "Edge of Night"],
+          "boots": "Boots of Swiftness",
+          "situational": ["Serylda's Grudge", "Death's Dance", "Guardian Angel"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 6.5
+        }
+      },
+      "matchups": {"Leona": -1, "Nautilus": -1, "Alistar": -1, "Sona": 2, "Soraka": 2, "Yuumi": 2},
+      "synergies": ["Draven", "Lucian", "Kai'Sa"]
+    },
+    "Renekton": {
+      "roles": ["top"],
+      "classes": ["bruiser"],
+      "tier": {"top": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Second Wind", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Eclipse", "Black Cleaver", "Sterak's Gage"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 50.2, "pr": 4.5
+        }
+      },
+      "matchups": {"Volibear": -1, "Illaoi": -1, "Quinn": -2, "Riven": 1, "Yone": 1, "Yasuo": 1, "Camille": 1},
+      "synergies": ["Orianna", "Jarvan IV", "Lulu"]
+    },
+    "Riven": {
+      "roles": ["top"],
+      "classes": ["skirmisher"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Bone Plating", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Eclipse", "Black Cleaver", "Death's Dance"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Sterak's Gage", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 51.0, "pr": 4.8
+        }
+      },
+      "matchups": {"Renekton": -1, "Poppy": -2, "Malphite": -1, "Gangplank": 2, "Kayle": 2, "Vladimir": 1},
+      "synergies": ["Orianna", "Lulu", "Jarvan IV"]
+    },
+    "Samira": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Last Stand", "Taste of Blood", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["The Collector", "Infinity Edge", "Bloodthirster"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Guardian Angel", "Mortal Reminder"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > E > W",
+          "wr": 51.0, "pr": 5.8
+        }
+      },
+      "matchups": {"Ashe": 2, "Caitlyn": 1, "Jinx": 1, "Draven": -1, "Tristana": -1, "Vayne": -1},
+      "synergies": ["Leona", "Nautilus", "Rell", "Thresh"]
+    },
+    "Sejuani": {
+      "roles": ["jungle"],
+      "classes": ["vanguard", "tank"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Aftershock", "Font of Life", "Conditioning", "Unflinching", "Cheap Shot", "Ultimate Hunter"],
+          "rune_trees": ["Resolve", "Domination"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Mosstomper Seedling"],
+          "core": ["Hollow Radiance", "Jak'Sho, The Protean", "Thornmail"],
+          "boots": "Mercury's Treads",
+          "situational": ["Frozen Heart", "Spirit Visage", "Randuin's Omen"],
+          "spells": ["Flash", "Smite"],
+          "skills": "W > E > Q",
+          "wr": 52.0, "pr": 3.5
+        }
+      },
+      "matchups": {"Kindred": -1, "Graves": -1, "Lillia": -1, "Master Yi": 1, "Karthus": 1, "Evelynn": 1},
+      "synergies": ["Yasuo", "Miss Fortune", "Orianna"]
+    },
+    "Senna": {
+      "roles": ["utility", "bottom"],
+      "classes": ["marksman", "enchanter"],
+      "tier": {"utility": "A", "bottom": "B"},
+      "builds": {
+        "utility": {
+          "runes": ["Fleet Footwork", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Approach Velocity", "Magical Footwear"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Spectral Sickle", "Health Potion"],
+          "core": ["Eclipse", "Rapid Firecannon", "Infinity Edge"],
+          "boots": "Boots of Swiftness",
+          "situational": ["Lord Dominik's Regards", "The Collector", "Edge of Night"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 52.0, "pr": 6.5
+        }
+      },
+      "matchups": {"Blitzcrank": -2, "Leona": -1, "Nautilus": -1, "Soraka": 1, "Yuumi": 1, "Sona": 1},
+      "synergies": ["Tahm Kench", "Seraphine", "Maokai"]
+    },
+    "Sett": {
+      "roles": ["top"],
+      "classes": ["bruiser"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Tenacity", "Last Stand", "Second Wind", "Unflinching"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Stridebreaker", "Sterak's Gage", "Dead Man's Plate"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Death's Dance", "Force of Nature", "Thornmail"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 51.5, "pr": 5.2
+        }
+      },
+      "matchups": {"Quinn": -2, "Kennen": -2, "Gangplank": -1, "Yasuo": 1, "Yone": 1, "Garen": 1, "Nasus": 1},
+      "synergies": ["Orianna", "Jarvan IV", "Lulu"]
+    },
+    "Shen": {
+      "roles": ["top"],
+      "classes": ["tank", "vanguard"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Grasp of the Undying", "Shield Bash", "Second Wind", "Overgrowth", "Cheap Shot", "Ultimate Hunter"],
+          "rune_trees": ["Resolve", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Shield"],
+          "core": ["Heartsteel", "Hollow Radiance", "Titanic Hydra"],
+          "boots": "Plated Steelcaps",
+          "situational": ["Thornmail", "Spirit Visage", "Randuin's Omen"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > E > W",
+          "wr": 52.5, "pr": 4.2
+        }
+      },
+      "matchups": {"Fiora": -2, "Darius": -1, "Mordekaiser": -1, "Gangplank": 1, "Kayle": 2, "Vladimir": 1, "Gnar": 1},
+      "synergies": ["Jinx", "Kai'Sa", "Any carry — global ult"]
+    },
+    "Sylas": {
+      "roles": ["middle"],
+      "classes": ["mage", "bruiser"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Sudden Impact", "Eyeball Collection", "Ultimate Hunter", "Presence of Mind", "Legend: Haste"],
+          "rune_trees": ["Domination", "Precision"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Rod of Ages", "Lich Bane", "Zhonya's Hourglass"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Rabadon's Deathcap", "Void Staff", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 51.0, "pr": 6.0
+        }
+      },
+      "matchups": {"Cassiopeia": -1, "Anivia": -1, "Azir": -1, "Fizz": 1, "Akali": 1, "Katarina": 1},
+      "synergies": ["Jarvan IV", "Leona", "Amumu"]
+    },
+    "Syndra": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Cheap Shot", "Eyeball Collection", "Treasure Hunter", "Manaflow Band", "Transcendence"],
+          "rune_trees": ["Domination", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 51.5, "pr": 5.8
+        }
+      },
+      "matchups": {"Fizz": -2, "Zed": -1, "Yasuo": -1, "Twisted Fate": 2, "Malzahar": 1, "Lux": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Leona"]
+    },
+    "Thresh": {
+      "roles": ["utility"],
+      "classes": ["vanguard", "catcher"],
+      "tier": {"utility": "S"},
+      "builds": {
+        "utility": {
+          "runes": ["Aftershock", "Font of Life", "Bone Plating", "Unflinching", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Resolve", "Inspiration"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Relic Shield", "Health Potion"],
+          "core": ["Locket of the Iron Solari", "Knight's Vow", "Zeke's Convergence"],
+          "boots": "Mercury's Treads",
+          "situational": ["Thornmail", "Frozen Heart", "Redemption"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 11.0
+        }
+      },
+      "matchups": {"Morgana": -2, "Zyra": -1, "Brand": -1, "Sona": 2, "Yuumi": 2, "Soraka": 1},
+      "synergies": ["Kai'Sa", "Jinx", "Samira"]
+    },
+    "Tristana": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A"},
+      "builds": {
+        "bottom": {
+          "runes": ["Hail of Blades", "Taste of Blood", "Eyeball Collection", "Treasure Hunter", "Presence of Mind", "Legend: Alacrity"],
+          "rune_trees": ["Domination", "Precision"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Phantom Dancer", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Bloodthirster", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "E > Q > W",
+          "wr": 51.5, "pr": 5.5
+        }
+      },
+      "matchups": {"Draven": -1, "Caitlyn": -1, "Lucian": -1, "Jinx": 1, "Kog'Maw": 1, "Ashe": 1, "Samira": 1},
+      "synergies": ["Leona", "Nautilus", "Alistar"]
+    },
+    "Twisted Fate": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "B"},
+      "builds": {
+        "middle": {
+          "runes": ["Fleet Footwork", "Presence of Mind", "Legend: Haste", "Coup de Grace", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Rod of Ages", "Lich Bane", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Zhonya's Hourglass", "Void Staff", "Rapid Firecannon"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 50.8, "pr": 3.8
+        }
+      },
+      "matchups": {"Fizz": -2, "LeBlanc": -2, "Akali": -2, "Malzahar": 1, "Lux": 1, "Veigar": 1},
+      "synergies": ["Nocturne", "Pantheon", "Shen"]
+    },
+    "Vayne": {
+      "roles": ["bottom", "top"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "A", "top": "B"},
+      "builds": {
+        "bottom": {
+          "runes": ["Lethal Tempo", "Triumph", "Legend: Alacrity", "Cut Down", "Taste of Blood", "Treasure Hunter"],
+          "rune_trees": ["Precision", "Domination"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Blade of the Ruined King", "Kraken Slayer", "Phantom Dancer"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Infinity Edge", "Guardian Angel", "Wit's End"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > W > E",
+          "wr": 51.5, "pr": 7.0
+        }
+      },
+      "matchups": {"Draven": -1, "Caitlyn": -2, "Lucian": 1, "Jinx": 1, "Ashe": 1, "Kog'Maw": 1},
+      "synergies": ["Lulu", "Thresh", "Nami"]
+    },
+    "Veigar": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Cheap Shot", "Eyeball Collection", "Treasure Hunter", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Domination", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 52.8, "pr": 5.5
+        }
+      },
+      "matchups": {"Fizz": -2, "Akali": -2, "Katarina": -1, "Malzahar": 1, "Lux": 1, "Orianna": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Leona"]
+    },
+    "Vi": {
+      "roles": ["jungle"],
+      "classes": ["bruiser", "vanguard"],
+      "tier": {"jungle": "A"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Haste", "Last Stand", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Eclipse", "Black Cleaver", "Sterak's Gage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > E > W",
+          "wr": 51.5, "pr": 5.0
+        }
+      },
+      "matchups": {"Lee Sin": -1, "Graves": -1, "Elise": -1, "Karthus": 2, "Evelynn": 1, "Amumu": 1},
+      "synergies": ["Orianna", "Lulu", "Janna"]
+    },
+    "Viego": {
+      "roles": ["jungle"],
+      "classes": ["skirmisher"],
+      "tier": {"jungle": "S"},
+      "builds": {
+        "jungle": {
+          "runes": ["Conqueror", "Triumph", "Legend: Alacrity", "Coup de Grace", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Precision", "Inspiration"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Gustwalker Hatchling"],
+          "core": ["Blade of the Ruined King", "Trinity Force", "Sterak's Gage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > W > E",
+          "wr": 52.0, "pr": 8.0
+        }
+      },
+      "matchups": {"Rammus": -2, "Lee Sin": -1, "Graves": -1, "Karthus": 2, "Evelynn": 1, "Master Yi": 1},
+      "synergies": ["Orianna", "Lulu", "Jarvan IV"]
+    },
+    "Viktor": {
+      "roles": ["middle"],
+      "classes": ["mage"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Gathering Storm", "Taste of Blood", "Treasure Hunter"],
+          "rune_trees": ["Sorcery", "Domination"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "E > Q > W",
+          "wr": 51.8, "pr": 4.5
+        }
+      },
+      "matchups": {"Fizz": -2, "Zed": -1, "Akali": -1, "Malzahar": 1, "Twisted Fate": 1, "Veigar": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Leona"]
+    },
+    "Vladimir": {
+      "roles": ["middle", "top"],
+      "classes": ["mage"],
+      "tier": {"middle": "B", "top": "B"},
+      "builds": {
+        "middle": {
+          "runes": ["Phase Rush", "Nimbus Cloak", "Transcendence", "Gathering Storm", "Cosmic Insight", "Magical Footwear"],
+          "rune_trees": ["Sorcery", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Doran's Ring", "Health Potion"],
+          "core": ["Rod of Ages", "Rabadon's Deathcap", "Zhonya's Hourglass"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Void Staff", "Spirit Visage", "Banshee's Veil"],
+          "spells": ["Flash", "Ghost"],
+          "skills": "Q > E > W",
+          "wr": 51.0, "pr": 4.0
+        }
+      },
+      "matchups": {"Anivia": -1, "Malzahar": -1, "Cassiopeia": -1, "Akali": 1, "Katarina": 1, "Yasuo": 1},
+      "synergies": ["Jarvan IV", "Amumu", "Orianna"]
+    },
+    "Volibear": {
+      "roles": ["top", "jungle"],
+      "classes": ["bruiser", "tank"],
+      "tier": {"top": "A", "jungle": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Conqueror", "Triumph", "Legend: Tenacity", "Last Stand", "Demolish", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Riftmaker", "Nashor's Tooth", "Spirit Visage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Zhonya's Hourglass", "Thornmail", "Dead Man's Plate"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 52.0, "pr": 4.5
+        }
+      },
+      "matchups": {"Vayne": -2, "Quinn": -1, "Fiora": -1, "Irelia": 1, "Renekton": 1, "Gwen": 1, "Nasus": 1},
+      "synergies": ["Orianna", "Lulu", "Jarvan IV"]
+    },
+    "Warwick": {
+      "roles": ["jungle", "top"],
+      "classes": ["bruiser"],
+      "tier": {"jungle": "A", "top": "B"},
+      "builds": {
+        "jungle": {
+          "runes": ["Press the Attack", "Triumph", "Legend: Tenacity", "Last Stand", "Demolish", "Conditioning"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Scorchclaw Pup"],
+          "core": ["Blade of the Ruined King", "Sunfire Aegis", "Spirit Visage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Thornmail", "Dead Man's Plate", "Sterak's Gage"],
+          "spells": ["Flash", "Smite"],
+          "skills": "Q > W > E",
+          "wr": 52.5, "pr": 4.8
+        }
+      },
+      "matchups": {"Kindred": -1, "Graves": -1, "Lillia": -1, "Master Yi": 1, "Evelynn": 2, "Karthus": 1},
+      "synergies": ["Orianna", "Lulu", "Jarvan IV"]
+    },
+    "Xerath": {
+      "roles": ["utility", "middle"],
+      "classes": ["mage"],
+      "tier": {"utility": "A", "middle": "B"},
+      "builds": {
+        "utility": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Scorch", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Sorcery", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Luden's Companion", "Shadowflame", "Rabadon's Deathcap"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Banshee's Veil"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > W > E",
+          "wr": 51.5, "pr": 4.5
+        }
+      },
+      "matchups": {"Blitzcrank": -1, "Leona": -1, "Nautilus": -1, "Sona": 2, "Yuumi": 2, "Soraka": 1},
+      "synergies": ["Jhin", "Ashe", "Varus"]
+    },
+    "Yasuo": {
+      "roles": ["middle", "top", "bottom"],
+      "classes": ["skirmisher"],
+      "tier": {"middle": "A", "top": "B", "bottom": "B"},
+      "builds": {
+        "middle": {
+          "runes": ["Lethal Tempo", "Triumph", "Legend: Alacrity", "Last Stand", "Second Wind", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Blade of the Ruined King", "Kraken Slayer", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 8.5
+        }
+      },
+      "matchups": {"Renekton": -2, "Pantheon": -2, "Malphite": -2, "Veigar": 1, "Lux": 1, "Xerath": 1},
+      "synergies": ["Diana", "Malphite", "Jarvan IV", "Yone", "Gragas"]
+    },
+    "Yone": {
+      "roles": ["middle", "top"],
+      "classes": ["skirmisher"],
+      "tier": {"middle": "A", "top": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Lethal Tempo", "Triumph", "Legend: Alacrity", "Last Stand", "Second Wind", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Blade of the Ruined King", "Kraken Slayer", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Death's Dance", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > W > E",
+          "wr": 51.0, "pr": 9.2
+        }
+      },
+      "matchups": {"Renekton": -2, "Pantheon": -2, "Malphite": -2, "Veigar": 1, "Lux": 1, "Xerath": 1},
+      "synergies": ["Diana", "Malphite", "Jarvan IV", "Amumu"]
+    },
+    "Zed": {
+      "roles": ["middle"],
+      "classes": ["assassin"],
+      "tier": {"middle": "A"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Sudden Impact", "Eyeball Collection", "Treasure Hunter", "Transcendence", "Scorch"],
+          "rune_trees": ["Domination", "Sorcery"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Long Sword", "Refillable Potion"],
+          "core": ["Profane Hydra", "Youmuu's Ghostblade", "Serylda's Grudge"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Edge of Night", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "Q > W > E",
+          "wr": 51.2, "pr": 7.5
+        }
+      },
+      "matchups": {"Galio": -2, "Malphite": -2, "Lissandra": -2, "Twisted Fate": 2, "Veigar": 2, "Lux": 2, "Xerath": 2},
+      "synergies": ["Jarvan IV", "Orianna", "Lulu"]
+    },
+    "Zyra": {
+      "roles": ["utility"],
+      "classes": ["mage", "catcher"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Arcane Comet", "Manaflow Band", "Transcendence", "Scorch", "Cheap Shot", "Treasure Hunter"],
+          "rune_trees": ["Sorcery", "Domination"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Liandry's Torment", "Rylai's Crystal Scepter", "Shadowflame"],
+          "boots": "Sorcerer's Shoes",
+          "situational": ["Void Staff", "Zhonya's Hourglass", "Rabadon's Deathcap"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "E > Q > W",
+          "wr": 52.0, "pr": 4.8
+        }
+      },
+      "matchups": {"Leona": -1, "Nautilus": -1, "Blitzcrank": -1, "Sona": 2, "Yuumi": 2, "Soraka": 1},
+      "synergies": ["Jhin", "Ashe", "Caitlyn"]
+    },
+    "Soraka": {
+      "roles": ["utility"],
+      "classes": ["enchanter"],
+      "tier": {"utility": "A"},
+      "builds": {
+        "utility": {
+          "runes": ["Summon Aery", "Manaflow Band", "Transcendence", "Gathering Storm", "Revitalize", "Second Wind"],
+          "rune_trees": ["Sorcery", "Resolve"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Spellthief's Edge", "Health Potion"],
+          "core": ["Moonstone Renewer", "Redemption", "Staff of Flowing Water"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Mikael's Blessing", "Ardent Censer", "Warmog's Armor"],
+          "spells": ["Flash", "Heal"],
+          "skills": "W > Q > E",
+          "wr": 52.5, "pr": 5.8
+        }
+      },
+      "matchups": {"Blitzcrank": -2, "Leona": -1, "Nautilus": -1, "Sona": 1, "Janna": -1, "Lux": -1},
+      "synergies": ["Jinx", "Kog'Maw", "Vayne"]
+    },
+    "Talon": {
+      "roles": ["middle", "jungle"],
+      "classes": ["assassin"],
+      "tier": {"middle": "B", "jungle": "B"},
+      "builds": {
+        "middle": {
+          "runes": ["Electrocute", "Sudden Impact", "Eyeball Collection", "Treasure Hunter", "Magical Footwear", "Cosmic Insight"],
+          "rune_trees": ["Domination", "Inspiration"],
+          "shards": ["Adaptive", "Adaptive", "Health"],
+          "start": ["Long Sword", "Refillable Potion"],
+          "core": ["Profane Hydra", "Youmuu's Ghostblade", "Serylda's Grudge"],
+          "boots": "Ionian Boots of Lucidity",
+          "situational": ["Edge of Night", "Maw of Malmortius", "Guardian Angel"],
+          "spells": ["Flash", "Ignite"],
+          "skills": "W > Q > E",
+          "wr": 50.5, "pr": 4.0
+        }
+      },
+      "matchups": {"Galio": -2, "Malphite": -1, "Lissandra": -1, "Twisted Fate": 2, "Veigar": 2, "Lux": 1},
+      "synergies": ["Jarvan IV", "Orianna", "Amumu"]
+    },
+    "Xayah": {
+      "roles": ["bottom"],
+      "classes": ["marksman"],
+      "tier": {"bottom": "B"},
+      "builds": {
+        "bottom": {
+          "runes": ["Lethal Tempo", "Presence of Mind", "Legend: Alacrity", "Cut Down", "Absolute Focus", "Gathering Storm"],
+          "rune_trees": ["Precision", "Sorcery"],
+          "shards": ["Attack Speed", "Adaptive", "Health"],
+          "start": ["Doran's Blade", "Health Potion"],
+          "core": ["Kraken Slayer", "Phantom Dancer", "Infinity Edge"],
+          "boots": "Berserker's Greaves",
+          "situational": ["Lord Dominik's Regards", "Bloodthirster", "Guardian Angel"],
+          "spells": ["Flash", "Heal"],
+          "skills": "Q > E > W",
+          "wr": 50.5, "pr": 4.2
+        }
+      },
+      "matchups": {"Draven": -1, "Caitlyn": -1, "Lucian": -1, "Jinx": 1, "Kog'Maw": 1, "Ashe": 1},
+      "synergies": ["Rakan", "Leona", "Nautilus"]
+    },
+    "Nasus": {
+      "roles": ["top"],
+      "classes": ["bruiser", "tank"],
+      "tier": {"top": "B"},
+      "builds": {
+        "top": {
+          "runes": ["Fleet Footwork", "Triumph", "Legend: Tenacity", "Last Stand", "Second Wind", "Overgrowth"],
+          "rune_trees": ["Precision", "Resolve"],
+          "shards": ["Ability Haste", "Adaptive", "Armor"],
+          "start": ["Doran's Shield"],
+          "core": ["Trinity Force", "Frozen Heart", "Spirit Visage"],
+          "boots": "Mercury's Treads",
+          "situational": ["Thornmail", "Dead Man's Plate", "Force of Nature"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 51.0, "pr": 4.5
+        }
+      },
+      "matchups": {"Darius": -2, "Teemo": -1, "Illaoi": -1, "Malphite": 1, "Sion": 1, "Ornn": 1, "Cho'Gath": 1},
+      "synergies": ["Lulu", "Karma", "Janna"]
+    },
+    "Ornn": {
+      "roles": ["top"],
+      "classes": ["tank", "vanguard"],
+      "tier": {"top": "A"},
+      "builds": {
+        "top": {
+          "runes": ["Grasp of the Undying", "Demolish", "Conditioning", "Overgrowth", "Manaflow Band", "Transcendence"],
+          "rune_trees": ["Resolve", "Sorcery"],
+          "shards": ["Ability Haste", "Adaptive", "Health"],
+          "start": ["Doran's Shield"],
+          "core": ["Hollow Radiance", "Frozen Heart", "Thornmail"],
+          "boots": "Mercury's Treads",
+          "situational": ["Randuin's Omen", "Spirit Visage", "Abyssal Mask"],
+          "spells": ["Flash", "Teleport"],
+          "skills": "Q > W > E",
+          "wr": 52.0, "pr": 4.0
+        }
+      },
+      "matchups": {"Fiora": -3, "Gwen": -2, "Vayne": -2, "Gangplank": 1, "Yasuo": 1, "Yone": 1, "Riven": 1},
+      "synergies": ["Jinx", "Kai'Sa", "Aphelios"]
+    }
+  }
+}

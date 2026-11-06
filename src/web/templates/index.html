@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>League Advisor</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>LEAGUE ADVISOR</h1>
+  </div>
+  <div class="header-right">
+    <span id="summoner-info"></span>
+    <span id="connection-dot" class="dot disconnected"></span>
+    <span id="connection-text">Disconnected</span>
+    <span id="patch-badge" class="badge"></span>
+  </div>
+</header>
+
+<main>
+  <!-- Role selector -->
+  <div class="role-bar">
+    <label>YOUR ROLE</label>
+    <div class="role-buttons" id="role-buttons">
+      <button class="role-btn active" data-role="top">TOP</button>
+      <button class="role-btn" data-role="jungle">JNG</button>
+      <button class="role-btn" data-role="middle">MID</button>
+      <button class="role-btn" data-role="bottom">ADC</button>
+      <button class="role-btn" data-role="utility">SUP</button>
+    </div>
+    <div id="phase-badge" class="badge phase-none">LOBBY</div>
+  </div>
+
+  <!-- Teams + Recommendations -->
+  <div class="columns">
+
+    <!-- Ally Team -->
+    <div class="panel team-panel">
+      <h2>ALLIES</h2>
+      <div id="ally-slots" class="champ-slots">
+        <div class="champ-slot" data-index="0"><input type="text" placeholder="Ally 1" class="champ-input ally-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="1"><input type="text" placeholder="Ally 2" class="champ-input ally-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="2"><input type="text" placeholder="Ally 3" class="champ-input ally-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="3"><input type="text" placeholder="Ally 4" class="champ-input ally-input" autocomplete="off"><div class="suggestions"></div></div>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="panel rec-panel">
+      <h2>BEST PICKS</h2>
+      <div id="recommendations"></div>
+    </div>
+
+    <!-- Enemy Team -->
+    <div class="panel team-panel">
+      <h2>ENEMIES</h2>
+      <div id="enemy-slots" class="champ-slots">
+        <div class="champ-slot" data-index="0"><input type="text" placeholder="Enemy 1" class="champ-input enemy-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="1"><input type="text" placeholder="Enemy 2" class="champ-input enemy-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="2"><input type="text" placeholder="Enemy 3" class="champ-input enemy-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="3"><input type="text" placeholder="Enemy 4" class="champ-input enemy-input" autocomplete="off"><div class="suggestions"></div></div>
+        <div class="champ-slot" data-index="4"><input type="text" placeholder="Enemy 5" class="champ-input enemy-input" autocomplete="off"><div class="suggestions"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recap Panel -->
+  <div id="recap-panel" class="panel recap-panel hidden">
+    <div class="recap-header">
+      <h2>POST-GAME RECAP</h2>
+      <div id="recap-meta"></div>
+      <button id="reanalyze-btn" class="btn-gold" onclick="reanalyze()">Re-analyze</button>
+    </div>
+    <div id="recap-stats" class="recap-stats"></div>
+    <div id="recap-analysis" class="recap-analysis"></div>
+  </div>
+
+  <!-- Build Panel -->
+  <div id="build-panel" class="panel build-panel hidden">
+    <div class="build-header">
+      <h2 id="build-title">BUILD</h2>
+      <span id="build-meta"></span>
+      <button id="import-runes-btn" class="btn-gold hidden">Import Runes</button>
+    </div>
+    <div class="build-body">
+      <div class="build-section">
+        <h3>RUNES</h3>
+        <div id="build-runes"></div>
+      </div>
+      <div class="build-section">
+        <h3>ITEMS</h3>
+        <div id="build-items"></div>
+      </div>
+      <div class="build-section build-extra">
+        <div><strong>Spells:</strong> <span id="build-spells"></span></div>
+        <div><strong>Skills:</strong> <span id="build-skills"></span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>League Advisor — Personal Use</span>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
