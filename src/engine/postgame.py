@@ -55,80 +55,113 @@ class PostGameAnalyzer:
             for k, v in kwargs.items():
                 setattr(self, f"_{k}", v)
 
+    @staticmethod
+    def _pick(obj, *keys, default=0):
+        for k in keys:
+            if isinstance(obj, dict) and k in obj and obj[k] is not None:
+                return obj[k]
+        return default
+
+    def _normalize_player(self, p):
+        s = p.get("stats") if isinstance(p.get("stats"), dict) else {}
+        # Support both flattened camelCase and nested/uppercase EOG stat keys.
+        kills = self._pick(p, "kills", "championsKilled", default=self._pick(s, "CHAMPIONS_KILLED", "kills", default=0))
+        deaths = self._pick(p, "deaths", "numDeaths", default=self._pick(s, "NUM_DEATHS", "deaths", default=0))
+        assists = self._pick(p, "assists", default=self._pick(s, "ASSISTS", "assists", default=0))
+        cs = (self._pick(p, "minionsKilled", default=0) + self._pick(p, "neutralMinionsKilled", default=0))
+        if not cs:
+            cs = self._pick(s, "MINIONS_KILLED", "minionsKilled", default=0) + self._pick(s, "NEUTRAL_MINIONS_KILLED", "neutralMinionsKilled", default=0)
+        items = p.get("items")
+        if not isinstance(items, list):
+            items = [self._pick(p, f"item{i}", default=self._pick(s, f"ITEM{i}", default=0)) for i in range(7)]
+            items = [i for i in items if i]
+        return {
+            "summoner": self._pick(p, "summonerName", "riotIdGameName", "name", default="Unknown"),
+            "champion": self._pick(p, "championName", default="Unknown"),
+            "champion_id": self._pick(p, "championId", default=0),
+            "kills": int(kills or 0),
+            "deaths": int(deaths or 0),
+            "assists": int(assists or 0),
+            "cs": int(cs or 0),
+            "gold": int(self._pick(p, "goldEarned", default=self._pick(s, "GOLD_EARNED", "goldEarned", default=0)) or 0),
+            "damage_dealt": int(self._pick(p, "totalDamageDealtToChampions", "damageDealtToChampions", default=self._pick(s, "TOTAL_DAMAGE_DEALT_TO_CHAMPIONS", default=0)) or 0),
+            "damage_taken": int(self._pick(p, "totalDamageTaken", default=self._pick(s, "TOTAL_DAMAGE_TAKEN", default=0)) or 0),
+            "vision_score": int(self._pick(p, "visionScore", default=self._pick(s, "VISION_SCORE", default=0)) or 0),
+            "wards_placed": int(self._pick(p, "wardPlaced", "wardsPlaced", default=self._pick(s, "WARD_PLACED", "wardsPlaced", default=0)) or 0),
+            "level": int(self._pick(p, "level", "champLevel", default=self._pick(s, "LEVEL", default=1)) or 1),
+            "spell1": self._pick(p, "spell1Id", default=0),
+            "spell2": self._pick(p, "spell2Id", default=0),
+            "items": items,
+            "position": self._pick(p, "selectedPosition", "detectedTeamPosition", "position", default=""),
+            "puuid": self._pick(p, "puuid", default=""),
+            "is_local": bool(p.get("isLocalPlayer")),
+        }
+
     def collect_stats(self, lcu):
+        # EOG payload shape varies; try primary endpoint, then fall back.
         raw = lcu.get("/lol-end-of-game/v1/eog-stats-block")
+        if not raw:
+            raw = lcu.get("/lol-end-of-game/v1/eog-stats")
         if not raw:
             return None
 
-        local_puuid = None
-        if lcu.summoner:
-            local_puuid = lcu.summoner.get("puuid")
+        local_puuid = (lcu.summoner or {}).get("puuid")
+        local_name = ((lcu.summoner or {}).get("gameName") or (lcu.summoner or {}).get("displayName") or "").lower()
 
         my_stats = None
         my_team = []
         enemy_team = []
-        game_length = raw.get("gameLength", 0) or 0
+        game_length = self._pick(raw, "gameLength", "gameDuration", default=0) or 0
 
-        for team in raw.get("teams", []):
-            is_my_team = False
+        teams = raw.get("teams") or []
+        for team in teams:
+            is_my_team = bool(team.get("isPlayerTeam")) or bool(team.get("isLocalPlayer"))
             players = []
-
-            for p in team.get("players", []):
-                stats = {
-                    "summoner": p.get("summonerName", "Unknown"),
-                    "champion": p.get("championName", "Unknown"),
-                    "kills": p.get("kills", 0),
-                    "deaths": p.get("deaths", 0),
-                    "assists": p.get("assists", 0),
-                    "cs": p.get("minionsKilled", 0) + p.get("neutralMinionsKilled", 0),
-                    "gold": p.get("goldEarned", 0),
-                    "damage_dealt": p.get("totalDamageDealtToChampions", 0),
-                    "damage_taken": p.get("totalDamageTaken", 0),
-                    "vision_score": p.get("visionScore", 0),
-                    "wards_placed": p.get("wardPlaced", 0),
-                    "level": p.get("level", 1),
-                    "spell1": p.get("spell1Id", 0),
-                    "spell2": p.get("spell2Id", 0),
-                    "items": p.get("items", []),
-                    "position": p.get("selectedPosition", ""),
-                }
-
-                is_me = False
-                if local_puuid and p.get("puuid") == local_puuid:
+            for p in team.get("players") or []:
+                stats = self._normalize_player(p)
+                is_me = stats.get("is_local")
+                if not is_me and local_puuid and stats.get("puuid") and stats.get("puuid") == local_puuid:
                     is_me = True
-                elif lcu.summoner:
-                    my_name = lcu.summoner.get("gameName", "") or lcu.summoner.get("displayName", "")
-                    if my_name and p.get("summonerName", "").lower() == my_name.lower():
-                        is_me = True
-
+                if not is_me and local_name and stats.get("summoner", "").lower() == local_name:
+                    is_me = True
                 if is_me:
                     my_stats = stats
                     is_my_team = True
-
                 players.append(stats)
-
+            # Also check nested statsBlock shapes
+            if team.get("stats"):
+                pass
             if is_my_team:
                 my_team = players
             else:
                 enemy_team = players
 
+        # Some payloads put all players at top-level
+        if not my_stats and isinstance(raw.get("players"), list):
+            for p in raw["players"]:
+                stats = self._normalize_player(p)
+                if stats.get("is_local") or (local_name and stats["summoner"].lower() == local_name):
+                    my_stats = stats
+
         if not my_stats:
             return None
 
         game_result = "Unknown"
-        if raw.get("gameId"):
-            for team in raw.get("teams", []):
-                for p in team.get("players", []):
-                    pname = p.get("summonerName", "")
-                    if my_stats and pname == my_stats["summoner"]:
-                        game_result = "Victory" if team.get("isWinningTeam") else "Defeat"
+        for team in teams:
+            won = team.get("isWinningTeam")
+            if won is None:
+                won = team.get("win")
+            # if it's my team, use its result
+            team_has_me = any((pl.get("is_local") or (local_name and pl.get("summoner", "").lower() == local_name)) for pl in [self._normalize_player(x) for x in (team.get("players") or [])])
+            if team_has_me and won is not None:
+                game_result = "Victory" if won else "Defeat"
 
-        minutes = int(game_length) // 60
-        cs_per_min = round(my_stats["cs"] / max(minutes, 1), 1)
+        minutes = max(int(game_length) // 60, 1)
+        cs_per_min = round((my_stats.get("cs") or 0) / minutes, 1)
 
         latest_stats = {
             "result": game_result,
-            "game_length": f"{minutes}:{int(game_length) % 60:02d}",
+            "game_length": f"{int(game_length) // 60}:{int(game_length) % 60:02d}",
             "me": my_stats,
             "cs_per_min": cs_per_min,
             "my_team": my_team,
@@ -136,6 +169,8 @@ class PostGameAnalyzer:
             "raw_game_id": raw.get("gameId"),
         }
         self._set(latest_stats=latest_stats)
+        if my_stats.get("kills") == 0 and my_stats.get("deaths") == 0 and my_stats.get("assists") == 0 and my_stats.get("cs") == 0:
+            print("[PostGame] Warning: collected stats are all zeros; EOG payload fields may differ on this client.")
         return latest_stats
 
     def _base_recap(self, stats, status, analysis="", message="", model=None):
