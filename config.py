@@ -26,8 +26,8 @@ LEAGUE_INSTALL_PATHS = [
 ]
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-# Use the fastest model available to your key (Flash/Flash-Lite). Override in .env.
-RECAP_MODEL = os.environ.get("RECAP_MODEL", "gemini-2.0-flash")
+# Override in .env if needed. Fallbacks are tried automatically on model-not-found errors.
+RECAP_MODEL = os.environ.get("RECAP_MODEL", "gemini-3.8-flash")
 DB_PATH = os.environ.get("COMPANION_DB_PATH", os.path.join(DATA_DIR, "companion.db"))
 OPEN_BROWSER = os.environ.get("OPEN_BROWSER", "1").lower() in ("1", "true", "yes")
 SAFE_RUNE_IMPORT = os.environ.get("SAFE_RUNE_IMPORT", "1").lower() in ("1", "true", "yes")
