@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template, jsonify, request
+
+from flask import Flask, jsonify, render_template, request
 
 
 class WebServer:
@@ -26,7 +27,7 @@ class WebServer:
             role = request.args.get("role", "")
             allies = [a for a in request.args.getlist("allies") if a]
             enemies = [e for e in request.args.getlist("enemies") if e]
-            recs = self.state.recommender.recommend(role, allies, enemies)
+            recs = self.state.recommend(role, allies, enemies)
             return jsonify(recs)
 
         @self.flask.route("/api/build/<champion>")
@@ -41,7 +42,9 @@ class WebServer:
         @self.flask.route("/api/import-runes", methods=["POST"])
         def api_import_runes():
             body = request.get_json(silent=True) or {}
-            return jsonify(self.state.import_runes(body.get("champion"), body.get("role")))
+            confirm = bool(body.get("confirm"))
+            build = body.get("build") if isinstance(body.get("build"), dict) else None
+            return jsonify(self.state.import_runes(body.get("champion"), body.get("role"), confirm=confirm, build=build, option_name=body.get("option_name")))
 
         @self.flask.route("/api/recap")
         def api_recap():
@@ -57,6 +60,71 @@ class WebServer:
                 return jsonify({"status": "error", "message": "No game data to analyze"})
             self.state.postgame.analyze(stats)
             return jsonify({"status": "analyzing"})
+
+        @self.flask.route("/api/insights")
+        def api_insights():
+            limit = request.args.get("limit", 30, type=int)
+            return jsonify(self.state.db.insights(limit=limit))
+
+        @self.flask.route("/api/matches")
+        def api_matches():
+            limit = request.args.get("limit", 20, type=int)
+            rows = self.state.db.recent_matches(limit=limit)
+            for r in rows:
+                r.pop("stats_json", None)
+                r.pop("recap_json", None)
+            return jsonify(rows)
+
+        @self.flask.route("/api/settings", methods=["GET", "POST"])
+        def api_settings():
+            if request.method == "POST":
+                body = request.get_json(silent=True) or {}
+                # Only allow safe, non-secret UI settings to be persisted.
+                allowed = {"default_role", "show_insights", "auto_open_build", "theme"}
+                for k, v in body.items():
+                    if k in allowed:
+                        self.state.db.set_setting(k, v)
+                return jsonify({"ok": True, "settings": self.state.db.all_settings()})
+            from config import GEMINI_API_KEY, RECAP_MODEL, RUNE_PAGE_PREFIX, SAFE_RUNE_IMPORT
+
+            return jsonify({
+                "stored": self.state.db.all_settings(),
+                "runtime": {
+                    "has_gemini_key": bool(GEMINI_API_KEY),
+                    "recap_model": RECAP_MODEL,
+                    "safe_rune_import": SAFE_RUNE_IMPORT,
+                    "rune_page_prefix": RUNE_PAGE_PREFIX,
+                },
+            })
+
+        @self.flask.route("/api/pool", methods=["GET", "POST", "DELETE"])
+        def api_pool():
+            if request.method == "POST":
+                body = request.get_json(silent=True) or {}
+                champion = (body.get("champion") or "").strip()
+                if not champion:
+                    return jsonify({"error": "champion required"}), 400
+                self.state.db.upsert_pool(champion, body.get("role", ""), body.get("priority", 0), body.get("notes", ""))
+                return jsonify({"ok": True})
+            if request.method == "DELETE":
+                champion = request.args.get("champion", "")
+                self.state.db.remove_pool(champion)
+                return jsonify({"ok": True})
+            return jsonify(self.state.db.list_pool())
+
+        @self.flask.route("/api/notes", methods=["GET", "POST", "DELETE"])
+        def api_notes():
+            if request.method == "POST":
+                body = request.get_json(silent=True) or {}
+                content = (body.get("content") or "").strip()
+                if not content:
+                    return jsonify({"error": "content required"}), 400
+                note_id = self.state.db.add_note(content, body.get("category", "general"), body.get("champion", ""))
+                return jsonify({"ok": True, "id": note_id})
+            if request.method == "DELETE":
+                self.state.db.delete_note(request.args.get("id", 0))
+                return jsonify({"ok": True})
+            return jsonify(self.state.db.list_notes(limit=50))
 
     def run(self, host, port):
         self.flask.run(host=host, port=port, debug=False, use_reloader=False)

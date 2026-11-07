@@ -40,17 +40,74 @@ class ChampionStore:
     def get(self, name):
         return self.champions.get(name)
 
-    def get_build(self, champion, role):
+    def _normalize_build_entry(self, entry):
+        # Support future format: builds[role] = [build, build2, ...]
+        if isinstance(entry, list):
+            return [b for b in entry if isinstance(b, dict)]
+        if isinstance(entry, dict):
+            return [entry]
+        return []
+
+    def get_build_options(self, champion, role, limit=3):
+        """Return up to `limit` build options sorted by WR desc when available.
+
+        Backward compatible with single-build seed data. Adds transparent
+        situational variants when only one known build exists.
+        """
         champ = self.get(champion)
         if not champ:
-            return None
+            return []
         builds = champ.get("builds", {})
-        build = builds.get(role)
-        if build:
-            return build
-        if builds:
-            return next(iter(builds.values()))
-        return None
+        options = self._normalize_build_entry(builds.get(role))
+        if not options and builds:
+            # fallback to any role
+            options = self._normalize_build_entry(next(iter(builds.values())))
+        if not options:
+            return []
+
+        # Normalize/sort known options
+        normalized = []
+        for i, b in enumerate(options):
+            nb = dict(b)
+            nb.setdefault("name", "Highest WR" if i == 0 else f"Option {i+1}")
+            nb.setdefault("source", "seed")
+            normalized.append(nb)
+        normalized.sort(key=lambda b: (b.get("wr") is not None, b.get("wr", -1)), reverse=True)
+
+        # If seed only has one build, generate honest situational variants (no fabricated WR)
+        if len(normalized) == 1:
+            base = normalized[0]
+            variants = [base]
+            situ = base.get("situational") or []
+            if situ:
+                for idx, item in enumerate(situ[:2], start=2):
+                    v = dict(base)
+                    core = list(base.get("core") or [])
+                    if core:
+                        core = core[:-1] + [item]
+                    v["core"] = core
+                    v["wr"] = None
+                    v["pr"] = None
+                    v["name"] = f"Situational: {item}"
+                    v["note"] = "Variant from seed situational items (WR not rated in seed data)."
+                    v["source"] = "derived"
+                    variants.append(v)
+            # If still short, add boots/rune-agnostic variant marker
+            while len(variants) < limit and len(variants) < 3:
+                v = dict(base)
+                v["wr"] = None
+                v["pr"] = None
+                v["name"] = ["Highest WR", "Situational: core flex", "Situational: team/adapt"][len(variants)]
+                v["note"] = "Adapt core/situational items to enemy damage types and win condition."
+                v["source"] = "derived"
+                variants.append(v)
+            return variants[:limit]
+
+        return normalized[:limit]
+
+    def get_build(self, champion, role):
+        options = self.get_build_options(champion, role, limit=1)
+        return options[0] if options else None
 
     def get_tier(self, champion, role):
         champ = self.get(champion)

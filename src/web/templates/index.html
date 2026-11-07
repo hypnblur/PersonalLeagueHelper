@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>League Advisor</title>
+  <title>League Advisor — Personal Companion</title>
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -11,12 +11,14 @@
 <header>
   <div class="header-left">
     <h1>LEAGUE ADVISOR</h1>
+    <span class="subtitle">Personal Companion</span>
   </div>
   <div class="header-right">
     <span id="summoner-info"></span>
     <span id="connection-dot" class="dot disconnected"></span>
     <span id="connection-text">Disconnected</span>
     <span id="patch-badge" class="badge"></span>
+    <button class="btn-small" onclick="openSettings()">Settings</button>
   </div>
 </header>
 
@@ -36,8 +38,6 @@
 
   <!-- Teams + Recommendations -->
   <div class="columns">
-
-    <!-- Ally Team -->
     <div class="panel team-panel">
       <h2>ALLIES</h2>
       <div id="ally-slots" class="champ-slots">
@@ -48,13 +48,11 @@
       </div>
     </div>
 
-    <!-- Recommendations -->
     <div class="panel rec-panel">
       <h2>BEST PICKS</h2>
       <div id="recommendations"></div>
     </div>
 
-    <!-- Enemy Team -->
     <div class="panel team-panel">
       <h2>ENEMIES</h2>
       <div id="enemy-slots" class="champ-slots">
@@ -65,6 +63,15 @@
         <div class="champ-slot" data-index="4"><input type="text" placeholder="Enemy 5" class="champ-input enemy-input" autocomplete="off"><div class="suggestions"></div></div>
       </div>
     </div>
+  </div>
+
+  <!-- Loading / Player Intel -->
+  <div id="intel-panel" class="panel intel-panel hidden">
+    <div class="panel-header-row">
+      <h2>LOBBY / LOADING INTEL</h2>
+      <span class="muted small">Rank, winrate, and picked-champion mastery (best effort; hidden in some modes)</span>
+    </div>
+    <div id="player-intel" class="intel-grid"></div>
   </div>
 
   <!-- Recap Panel -->
@@ -78,7 +85,7 @@
     <div id="recap-analysis" class="recap-analysis"></div>
   </div>
 
-  <!-- Build Panel -->
+  <!-- Build Panel (legacy/secondary; center lock view is primary) -->
   <div id="build-panel" class="panel build-panel hidden">
     <div class="build-header">
       <h2 id="build-title">BUILD</h2>
@@ -86,24 +93,73 @@
       <button id="import-runes-btn" class="btn-gold hidden">Import Runes</button>
     </div>
     <div class="build-body">
-      <div class="build-section">
-        <h3>RUNES</h3>
-        <div id="build-runes"></div>
-      </div>
-      <div class="build-section">
-        <h3>ITEMS</h3>
-        <div id="build-items"></div>
-      </div>
+      <div class="build-section"><h3>RUNES</h3><div id="build-runes"></div></div>
+      <div class="build-section"><h3>ITEMS</h3><div id="build-items"></div></div>
       <div class="build-section build-extra">
         <div><strong>Spells:</strong> <span id="build-spells"></span></div>
         <div><strong>Skills:</strong> <span id="build-skills"></span></div>
       </div>
     </div>
   </div>
+
+  <!-- Companion dashboard -->
+  <section class="panel companion-panel">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="insights" onclick="switchTab('insights')">Insights</button>
+      <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">Matches</button>
+      <button class="tab-btn" data-tab="pool" onclick="switchTab('pool')">Champ Pool</button>
+      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">Notes</button>
+      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">Settings</button>
+      <button class="btn-small" onclick="refreshCompanion()">Refresh</button>
+    </div>
+
+    <div id="tab-insights" class="tab-content">
+      <div id="insights-summary" class="insights-grid"></div>
+      <div class="split">
+        <div><h3>Recent Games</h3><div id="insights-recent"></div></div>
+        <div><h3>By Champion</h3><div id="insights-champs"></div></div>
+      </div>
+    </div>
+
+    <div id="tab-matches" class="tab-content hidden">
+      <div id="matches-list"></div>
+    </div>
+
+    <div id="tab-pool" class="tab-content hidden">
+      <div class="inline-form">
+        <input id="pool-champ" placeholder="Champion" list="champion-datalist">
+        <input id="pool-role" placeholder="Role (optional)">
+        <input id="pool-notes" placeholder="Notes (optional)">
+        <button class="btn-gold" onclick="savePool()">Add / Update</button>
+      </div>
+      <datalist id="champion-datalist"></datalist>
+      <div id="pool-list"></div>
+    </div>
+
+    <div id="tab-notes" class="tab-content hidden">
+      <div class="inline-form">
+        <input id="note-champ" placeholder="Champion (optional)" list="champion-datalist">
+        <select id="note-category">
+          <option value="general">General</option>
+          <option value="goal">Goal</option>
+          <option value="learning">Learning</option>
+          <option value="matchup">Matchup</option>
+        </select>
+        <input id="note-content" placeholder="Write a note..." class="grow">
+        <button class="btn-gold" onclick="saveNote()">Save</button>
+      </div>
+      <div id="notes-list"></div>
+    </div>
+
+    <div id="tab-settings" class="tab-content hidden">
+      <div id="settings-view" class="settings-view"></div>
+      <p class="muted small">Secrets (like <code>GEMINI_API_KEY</code>) are read from environment/<code>.env</code> and are not shown here. Safe rune import only replaces pages named with the app prefix.</p>
+    </div>
+  </section>
 </main>
 
 <footer>
-  <span>League Advisor — Personal Use</span>
+  <span>League Advisor — Personal Use. Local dashboard; LCU integration is unofficial and may break with client updates.</span>
 </footer>
 
 <script src="/static/js/app.js"></script>

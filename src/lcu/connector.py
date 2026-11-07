@@ -148,12 +148,59 @@ class LCUConnector:
     def get_champ_select(self):
         return self.get("/lol-champ-select/v1/session")
 
-    def import_rune_page(self, name, primary_style, sub_style, selected_perks):
-        pages = self.get("/lol-perks/v1/pages")
-        if pages:
+    def get_gameflow_session(self):
+        return self.get("/lol-gameflow/v1/session")
+
+    def get_summoner_by_id(self, summoner_id):
+        if summoner_id in (None, "", 0):
+            return None
+        return self.get(f"/lol-summoner/v1/summoners/{summoner_id}")
+
+    def get_ranked_stats(self, puuid):
+        if not puuid:
+            return None
+        return self.get(f"/lol-ranked/v1/ranked-stats/{puuid}")
+
+    def get_champion_mastery(self, puuid, champion_id):
+        if not puuid or not champion_id:
+            return None
+        data = self.get(f"/lol-champion-mastery/v1/{puuid}/champion-mastery/by-champion/{int(champion_id)}")
+        if data is None:
+            return None
+        return data
+
+    def get_owned_champions(self):
+        # Best-effort: endpoint/shape varies by client version.
+        data = self.get("/lol-champions/v1/owned-champions-minimal")
+        if isinstance(data, list) and data:
+            return data
+        sid = (self.summoner or {}).get("summonerId")
+        if sid:
+            data = self.get(f"/lol-champions/v1/inventories/{sid}/champions-minimal")
+            if isinstance(data, list) and data:
+                return data
+        data = self.get("/lol-champ-select/v1/pickable-champion-ids")
+        if isinstance(data, list):
+            return [{"id": i, "ownership": {"owned": True}} for i in data]
+        return []
+
+    def import_rune_page(self, name, primary_style, sub_style, selected_perks, safe=True, prefix="LA:"):
+        pages = self.get("/lol-perks/v1/pages") or []
+        deleted = None
+        # Safer behavior: only touch app-owned rune pages.
+        if safe:
+            for page in pages:
+                pname = page.get("name") or ""
+                if page.get("isDeletable") and not page.get("isTemporary") and pname.startswith(prefix):
+                    self.delete(f"/lol-perks/v1/pages/{page['id']}")
+                    deleted = {"id": page.get("id"), "name": pname}
+                    break
+        else:
+            # Legacy behavior: free one deletable slot.
             for page in pages:
                 if page.get("isDeletable") and not page.get("isTemporary"):
                     self.delete(f"/lol-perks/v1/pages/{page['id']}")
+                    deleted = {"id": page.get("id"), "name": page.get("name")}
                     break
 
         page_data = {
@@ -164,4 +211,52 @@ class LCUConnector:
             "current": True,
         }
         resp = self.post("/lol-perks/v1/pages", page_data)
-        return resp is not None and resp.status_code in (200, 201)
+        ok = resp is not None and resp.status_code in (200, 201)
+        result = {
+            "ok": ok,
+            "status_code": getattr(resp, "status_code", None),
+            "deleted": deleted,
+        }
+        if not ok:
+            try:
+                body = resp.json() if resp is not None else None
+            except Exception:
+                body = getattr(resp, "text", None)
+            result["error"] = body or "LCU rejected rune page"
+            if isinstance(result["error"], dict):
+                result["error"] = result["error"].get("message") or str(result["error"])
+        return result
+
+    def rune_import_preview(self, name, safe=True, prefix="LA:"):
+        pages = self.get("/lol-perks/v1/pages") or []
+        action = "create"
+        target = None
+        deletable_app = 0
+        deletable_any = 0
+        if safe:
+            for page in pages:
+                pname = page.get("name") or ""
+                deletable = page.get("isDeletable") and not page.get("isTemporary")
+                if deletable:
+                    deletable_any += 1
+                if deletable and pname.startswith(prefix):
+                    deletable_app += 1
+                    if not target:
+                        action = "replace_app_page"
+                        target = {"id": page.get("id"), "name": pname}
+        else:
+            for page in pages:
+                if page.get("isDeletable") and not page.get("isTemporary"):
+                    deletable_any += 1
+                    if not target:
+                        action = "replace_deletable_page"
+                        target = {"id": page.get("id"), "name": page.get("name")}
+        return {
+            "safe": bool(safe),
+            "action": action,
+            "target": target,
+            "page_name": name,
+            "total_pages": len(pages),
+            "deletable_app_pages": deletable_app,
+            "deletable_pages": deletable_any,
+        }

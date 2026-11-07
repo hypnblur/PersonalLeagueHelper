@@ -81,12 +81,18 @@ class DataDragon:
 
     def _build_rune_lookup(self):
         self.rune_lookup = {}
+        self.rune_lookup_lower = {}
+        self.rune_meta = {}  # rune name lower -> {id, tree, tree_id, slot}
         if isinstance(self.runes, list):
             for tree in self.runes:
                 self.rune_lookup[tree["name"]] = tree
-                for slot in tree.get("slots", []):
+                self.rune_lookup_lower[tree["name"].lower()] = tree
+                for si, slot in enumerate(tree.get("slots", [])):
                     for rune in slot.get("runes", []):
                         self.rune_lookup[rune["name"]] = rune
+                        self.rune_lookup_lower[rune["name"].lower()] = rune
+                        meta = {"id": rune.get("id"), "tree": tree.get("name"), "tree_id": tree.get("id"), "slot": si}
+                        self.rune_meta[rune["name"].lower()] = meta
 
     def champion_name(self, champion_key):
         c = self.champion_by_key.get(int(champion_key))
@@ -129,54 +135,150 @@ class DataDragon:
         return ""
 
     SHARD_IDS = {
-        "adaptive": 5008, "adaptive force": 5008,
-        "attack speed": 5005,
-        "ability haste": 5007,
+        "adaptive": 5008, "adaptive force": 5008, "af": 5008,
+        "attack speed": 5005, "as": 5005,
+        "ability haste": 5007, "haste": 5007, "ah": 5007,
         "armor": 5002,
-        "magic resist": 5003, "mr": 5003,
-        "health": 5001, "hp": 5001,
+        "magic resist": 5003, "magic resistance": 5003, "mr": 5003,
+        "health": 5001, "health scaling": 5001, "hp": 5001, "scaling health": 5001,
+        "tenacity and slow resist": 5013, "tenacity": 5013, "slow resist": 5013,
+        "move speed": 5010, "movement speed": 5010, "ms": 5010,
     }
 
+    # Aliases for renamed/removed runes across patches/Data Dragon naming differences.
+    RUNE_ALIASES = {
+        # Domination slot 2 / vision row changes
+        "eyeball collection": "Deep Ward",
+        "ghost poro": "Deep Ward",
+        "zombie ward": "Deep Ward",
+        # Precision legend row changes
+        "legend: tenacity": "Legend: Haste",
+        "legend tenacity": "Legend: Haste",
+        # Sorcery keystone naming seen in some Data Dragon outputs
+        "phase rush": "Stormraider's Surge",
+        # Inspiration row changes (common older names)
+        "magical footwear (removed)": "Magical Footwear",
+        "biscuit delivery": "Magical Footwear",
+        "time warp tonic": "Magical Footwear",
+    }
+
+    TREE_ALIASES = {
+        "inspirations": "Inspiration",
+    }
+
+    def _canonical_rune_name(self, name):
+        if not name:
+            return name
+        key = str(name).strip()
+        low = key.lower()
+        if low in self.RUNE_ALIASES:
+            return self.RUNE_ALIASES[low]
+        return key
+
+    def _canonical_tree_name(self, name):
+        if not name:
+            return name
+        key = str(name).strip()
+        return self.TREE_ALIASES.get(key.lower(), key)
+
+    def _lookup_rune(self, name):
+        if not name:
+            return None
+        canon = self._canonical_rune_name(name)
+        rune = self.rune_lookup.get(canon)
+        if rune:
+            return rune
+        return getattr(self, "rune_lookup_lower", {}).get(canon.lower())
+
     def rune_id(self, rune_name):
-        rune = self.rune_lookup.get(rune_name)
+        rune = self._lookup_rune(rune_name)
         return rune["id"] if rune and "id" in rune else None
 
     def rune_tree_id(self, tree_name):
+        tree_name = self._canonical_tree_name(tree_name)
+        if not tree_name:
+            return None
         if isinstance(self.runes, list):
             for tree in self.runes:
-                if tree["name"].lower() == tree_name.lower():
+                if tree["name"].lower() == str(tree_name).lower():
                     return tree["id"]
         return None
 
     def shard_id(self, shard_name):
-        return self.SHARD_IDS.get(shard_name.lower())
+        if not shard_name:
+            return None
+        return self.SHARD_IDS.get(str(shard_name).strip().lower())
 
     def resolve_rune_page(self, build):
-        rune_names = build.get("runes", [])
-        trees = build.get("rune_trees", [])
-        shards = build.get("shards", [])
+        """Resolve a build's rune names to LCU perk IDs.
 
-        primary_style = self.rune_tree_id(trees[0]) if trees else None
+        Returns the classic success shape for compatibility:
+        {primary_style, sub_style, selected_perks}
+        or a failure shape:
+        {ok: False, missing: [...], message: ...}
+        """
+        rune_names = build.get("runes", []) or []
+        trees = build.get("rune_trees", []) or []
+        shards = build.get("shards", []) or []
+
+        missing = []
+        primary_style = self.rune_tree_id(trees[0]) if len(trees) > 0 else None
         sub_style = self.rune_tree_id(trees[1]) if len(trees) > 1 else None
+        if trees and not primary_style:
+            missing.append(f"tree:{trees[0]}")
+        if len(trees) > 1 and not sub_style:
+            missing.append(f"tree:{trees[1]}")
 
         perk_ids = []
-        for name in rune_names:
+        resolved_names = []
+        warnings = []
+        for i, name in enumerate(rune_names):
             rid = self.rune_id(name)
             if rid:
                 perk_ids.append(rid)
+                resolved_names.append(name)
+                canon = self._canonical_rune_name(name)
+                meta = getattr(self, "rune_meta", {}).get(str(canon).lower())
+                if meta and primary_style and sub_style:
+                    if i <= 3 and meta.get("tree_id") != primary_style:
+                        warnings.append(f"{name} is in {meta.get('tree')}, expected primary tree")
+                    if i >= 4 and meta.get("tree_id") != sub_style:
+                        warnings.append(f"{name} is in {meta.get('tree')}, expected secondary tree")
+                    if i <= 3 and meta.get("slot") != i:
+                        warnings.append(f"{name} may be in wrong slot for primary path")
+            else:
+                missing.append(f"rune:{name}")
+
+        if primary_style and sub_style and primary_style == sub_style:
+            missing.append("trees:primary and secondary must differ")
 
         for shard in shards:
             sid = self.shard_id(shard)
             if sid:
                 perk_ids.append(sid)
+            else:
+                missing.append(f"shard:{shard}")
 
-        if not primary_style or not sub_style or len(perk_ids) < 6:
-            return None
+        # LCU rune pages normally require 9 selected perks (4 primary + 2 secondary + 3 shards).
+        if not primary_style or not sub_style or len(perk_ids) < 8 or missing:
+            return {
+                "ok": False,
+                "missing": missing,
+                "warnings": warnings,
+                "message": "Could not resolve rune page" + (f": {', '.join(missing[:8])}" if missing else ""),
+                "primary_style": primary_style,
+                "sub_style": sub_style,
+                "selected_perks": perk_ids,
+            }
 
         return {
+            "ok": True,
             "primary_style": primary_style,
             "sub_style": sub_style,
             "selected_perks": perk_ids,
+            "resolved_names": resolved_names,
+            "warnings": warnings,
+            "missing": [],
         }
 
     def all_champion_names(self):

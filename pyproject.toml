@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "league-advisor-companion"
+version = "0.2.0"
+description = "Personal local League of Legends companion (draft help, rune import, post-game recap, insights)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "flask>=3.0",
+  "requests>=2.31",
+  "psutil>=5.9",
+  "python-dotenv>=1.0",
+  "google-genai>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.setuptools]
+# Flat layout: keep main.py at repo root and src/ package modules.
+py-modules = ["main", "config"]
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[project.scripts]
+league-advisor = "main:main"
