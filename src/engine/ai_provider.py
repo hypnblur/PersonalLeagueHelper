@@ -39,7 +39,12 @@ class ModelNotFoundError(AIProviderError):
 
 def _is_model_error(err: Exception) -> bool:
     s = str(err).lower()
-    return any(x in s for x in ["model", "not found", "404", "unsupported", "does not exist", "invalid model", "unknown model"]) and "api key" not in s and "quota" not in s and "rate limit" not in s
+    if "api key" in s or "quota" in s or "rate limit" in s or "permission" in s:
+        return False
+    return any(x in s for x in [
+        "model", "not found", "not_found", "404", "unsupported", "does not exist",
+        "no longer available", "invalid model", "unknown model", "unrecognized",
+    ])
 
 
 class BaseProvider:
@@ -72,9 +77,6 @@ class GeminiProvider(BaseProvider):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._client = None
-        if not self.fallback_model:
-            # Keep recap snappy if preferred model is unavailable.
-            self.fallback_model = "gemini-2.0-flash"
 
     def is_configured(self) -> bool:
         return bool(self.api_key) and genai is not None and bool(self.model)
@@ -91,6 +93,18 @@ class GeminiProvider(BaseProvider):
             return genai_types.GenerateContentConfig(max_output_tokens=int(max_tokens), temperature=float(temperature))
         except Exception:
             return None
+
+    def candidate_models(self, model=None):
+        out = []
+        preferred = model or self.model
+        for m in [preferred, self.fallback_model, "gemini-3.8-flash", "gemini-3.8-flash-lite", "gemini-2.5-flash"]:
+            if not m:
+                continue
+            m = str(m).strip()
+            # normalize "models/..." prefix for candidate comparison only when useful
+            if m and m not in out:
+                out.append(m)
+        return out
 
     def generate(self, prompt, *, system=None, model=None, max_tokens=320, temperature=0.4, timeout=None, stream=False, on_chunk=None):
         if not self.is_configured():
