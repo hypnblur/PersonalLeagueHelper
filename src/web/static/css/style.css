@@ -586,3 +586,15 @@ code { background: #00000033; padding: 1px 4px; border-radius: 3px; }
 .build-opt-btn .opt-name { display:block; font-size:12px; font-weight:600; }
 .build-opt-btn .opt-wr { display:block; font-size:11px; color:var(--gold); margin-top:2px; }
 .owned-badge { background:#1f4a2a; color:#9be7a7; border:1px solid #2f6b3f; border-radius:3px; padding:1px 5px; font-size:10px; font-weight:700; vertical-align:middle; }
+
+/* Draft tools */
+.draft-tools-panel { margin-bottom: 16px; }
+.draft-output { margin-top: 8px; padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); white-space: normal; }
+.draft-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.draft-list { display:grid; gap:8px; margin-top:8px; }
+.draft-row { padding:8px; background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius); }
+.draft-row.clickable { cursor:pointer; }
+.draft-row.clickable:hover { border-color: var(--gold-dim); }
+.warn { color: #ffcf8a; font-size: 12px; margin-top: 4px; }
+.note-ok { color: #9fd3ff; font-size: 12px; margin-top: 4px; }
+@media (max-width: 900px) { .draft-grid { grid-template-columns: 1fr; } }

@@ -25,9 +25,17 @@ LEAGUE_INSTALL_PATHS = [
     r"C:\Program Files (x86)\Riot Games\League of Legends",
 ]
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-# Override in .env if needed. Fallbacks are tried automatically on model-not-found errors.
-RECAP_MODEL = os.environ.get("RECAP_MODEL", "gemini-3.8-flash")
+# AI provider config (backward compatible with GEMINI_API_KEY / RECAP_MODEL)
+AI_PROVIDER = os.environ.get("AI_PROVIDER", "gemini").strip().lower()  # gemini | openai | openai_compatible | ollama
+AI_API_KEY = os.environ.get("AI_API_KEY") or os.environ.get("OPENAI_API_KEY") or os.environ.get("GEMINI_API_KEY", "")
+AI_MODEL = os.environ.get("AI_MODEL") or os.environ.get("RECAP_MODEL") or "gemini-3.8-flash"
+AI_BASE_URL = os.environ.get("AI_BASE_URL", "").strip().rstrip("/")
+AI_TIMEOUT = int(os.environ.get("AI_TIMEOUT", "60"))
+AI_FALLBACK_MODEL = os.environ.get("AI_FALLBACK_MODEL", "").strip()
+
+# Legacy aliases (kept for compatibility)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "") or (AI_API_KEY if AI_PROVIDER == "gemini" else "")
+RECAP_MODEL = AI_MODEL
 DB_PATH = os.environ.get("COMPANION_DB_PATH", os.path.join(DATA_DIR, "companion.db"))
 OPEN_BROWSER = os.environ.get("OPEN_BROWSER", "1").lower() in ("1", "true", "yes")
 SAFE_RUNE_IMPORT = os.environ.get("SAFE_RUNE_IMPORT", "1").lower() in ("1", "true", "yes")

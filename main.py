@@ -11,6 +11,7 @@ from config import LCU_POLL_INTERVAL, OPEN_BROWSER, RUNE_PAGE_PREFIX, SAFE_RUNE_
 from src.data.companion_db import CompanionDB
 from src.data.dragon import DataDragon
 from src.data.store import ChampionStore
+from src.engine.draft import DraftAdvisor
 from src.engine.intel import PlayerIntelService
 from src.engine.postgame import PostGameAnalyzer
 from src.engine.recommender import Recommender
@@ -19,7 +20,7 @@ from src.web.server import WebServer
 
 
 class AppState:
-    def __init__(self, dragon, store, lcu, recommender, postgame, db, intel=None):
+    def __init__(self, dragon, store, lcu, recommender, postgame, db, intel=None, draft=None):
         self.dragon = dragon
         self.store = store
         self.lcu = lcu
@@ -27,12 +28,16 @@ class AppState:
         self.postgame = postgame
         self.db = db
         self.intel = intel
+        self.draft = draft
         self._lock = threading.RLock()
         self._champ_select = None
         self._phase = "None"
         self._my_role = ""
         self._owned_names = set()
         self._owned_at = 0
+        self._mastery = {}
+        self._mastery_at = 0
+        self._draft_ai = {"status": "idle", "text": ""}
 
     def _set(self, **kwargs):
         with self._lock:
@@ -176,7 +181,7 @@ class AppState:
                 p["is_me"] = bool(me_puuid and p.get("puuid") and p.get("puuid") == me_puuid)
         return list(by_key.values())
 
-    def build_info(self, champion, role=None):
+    def build_info(self, champion, role=None, enemies=None):
         champ = self.store.get(champion)
         if not champ:
             return {"error": f"No data for '{champion}'"}
@@ -185,6 +190,10 @@ class AppState:
         options = self.store.get_build_options(champion, role, limit=3)
         if not options:
             return {"error": f"No build for {champion} {role}"}
+        if enemies and self.draft:
+            adaptive = self.draft.adaptive_build(self.store, champion, role, enemies=enemies)
+            if adaptive:
+                options = list(options) + [adaptive]
         return {
             "champion": champion,
             "role": role,
@@ -237,6 +246,101 @@ class AppState:
         except Exception:
             pass
         return self.recommender.recommend(role, allies, enemies, owned=owned or None, personal=personal)
+
+    def refresh_mastery(self, force=False):
+        if not self.lcu.connected or not (self.lcu.summoner or {}).get("puuid"):
+            return
+        now = time.time()
+        with self._lock:
+            if not force and self._mastery and (now - self._mastery_at) < 600:
+                return
+        try:
+            puuid = self.lcu.summoner.get("puuid")
+            rows = self.lcu.get_champion_masteries(puuid, limit=80) or []
+            mastery = {}
+            for r in rows:
+                cid = r.get("championId")
+                name = self.dragon.champion_name(cid) if cid else None
+                if name and not str(name).startswith("Champion "):
+                    mastery[name] = {
+                        "level": r.get("championLevel"),
+                        "points": r.get("championPoints"),
+                    }
+            with self._lock:
+                if mastery:
+                    self._mastery = mastery
+                    self._mastery_at = now
+        except Exception:
+            pass
+
+    def draft_analysis(self, role="", allies=None, enemies=None):
+        if not self.draft:
+            return {}
+        return self.draft.team_comp_warnings(allies=allies, enemies=enemies)
+
+    def ban_suggestions(self, role, allies=None, enemies=None):
+        if not self.draft:
+            return []
+        with self._lock:
+            owned = set(self._owned_names)
+        pool = []
+        try:
+            pool = self.db.list_pool() if self.db else []
+        except Exception:
+            pass
+        return self.draft.ban_suggestions(role, owned=owned, pool=pool, enemies=enemies)
+
+    def what_should_i_play(self, role, allies=None, enemies=None):
+        if not self.draft:
+            return self.recommend(role, allies or [], enemies or [])[:5]
+        with self._lock:
+            owned = set(self._owned_names)
+            mastery = dict(self._mastery)
+        personal = {}
+        try:
+            personal = self.db.champion_personal_stats() if self.db else {}
+        except Exception:
+            pass
+        return self.draft.what_should_i_play(role, allies=allies, enemies=enemies, owned=owned, personal=personal, mastery=mastery, recommender=self.recommender)
+
+    def run_draft_ai(self, kind, payload):
+        from src.engine.ai_provider import get_provider, AIProviderError
+        def work():
+            try:
+                provider = get_provider()
+                if not provider.is_configured():
+                    self._set(_draft_ai={"status": "error", "text": "AI not configured. Set AI_PROVIDER/AI_API_KEY in .env."})
+                    return
+                role = payload.get("role") or ""
+                allies = payload.get("allies") or []
+                enemies = payload.get("enemies") or []
+                analysis = self.draft_analysis(role, allies, enemies) if self.draft else {}
+                if kind == "build_explain":
+                    champ = payload.get("champion") or "your champion"
+                    build = payload.get("build") or {}
+                    prompt = f"""Explain this League build briefly (<140 words) for {champ} ({role}).
+ENEMY TEAM: {', '.join(enemies) or 'unknown'}
+BUILD: keystone {(build.get('runes') or ['?'])[0]}, core {build.get('core')}, boots {build.get('boots')}, situational {build.get('situational')}, spells {build.get('spells')}, skills {build.get('skills')}.
+TEAM COMP NOTES: {analysis.get('vs')}
+Give: 1) why this setup works, 2) one item/rune to swap vs this enemy comp, 3) one key gameplay tip. Be specific."""
+                else:
+                    picks = self.what_should_i_play(role, allies, enemies)
+                    bans = self.ban_suggestions(role, allies, enemies)
+                    prompt = f"""You are a concise League draft coach.
+ROLE: {role}. ALLIES LOCKED: {', '.join(allies) or 'none'}. ENEMIES LOCKED: {', '.join(enemies) or 'none'}.
+TEAM COMP WARNINGS (approx): {analysis}
+TOP PICKS FOR ME (owned/preferred): {[{"champion":p.get("champion"),"reasons":p.get("reasons",[])[:3]} for p in picks[:5]]}
+BAN IDEAS: {[b.get("champion") for b in bans[:5]]}
+Give (<180 words): 1) best pick from my list and why vs enemies, 2) main win condition/threat, 3) one ban priority if relevant, 4) one drafting caution."""
+                text = ""
+                def on_chunk(t, meta): self._set(_draft_ai={"status": "analyzing", "text": t, "model": meta.get("model")})
+                res = provider.generate(prompt, max_tokens=360, temperature=0.4, stream=True, on_chunk=on_chunk)
+                self._set(_draft_ai={"status": "done", "text": (res.get("text") or text).strip(), "model": res.get("model")})
+            except Exception as e:
+                self._set(_draft_ai={"status": "error", "text": str(e)})
+        self._set(_draft_ai={"status": "analyzing", "text": ""})
+        threading.Thread(target=work, daemon=True).start()
+        return {"status": "analyzing"}
 
     def all_champions(self):
         out = []
@@ -299,6 +403,7 @@ def monitor_loop(app_state):
                     print(f"[Monitor] Connected — {name}")
                     was_connected = True
                     threading.Thread(target=app_state.refresh_ownership, kwargs={"force": True}, daemon=True).start()
+                    threading.Thread(target=app_state.refresh_mastery, kwargs={"force": True}, daemon=True).start()
                 else:
                     if was_connected:
                         print("[Monitor] Client disconnected")
@@ -368,7 +473,8 @@ def main():
     recommender = Recommender(store)
     postgame = PostGameAnalyzer(db=db)
     intel = PlayerIntelService(lcu)
-    app_state = AppState(dragon, store, lcu, recommender, postgame, db, intel=intel)
+    draft = DraftAdvisor(store)
+    app_state = AppState(dragon, store, lcu, recommender, postgame, db, intel=intel, draft=draft)
 
     if postgame.has_key:
         print("  AI Recap: enabled")

@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.0] - draft/pre-game tools & AI provider refactor
+
+### Added
+- **AI provider interface** (`src/engine/ai_provider.py`): pluggable AI backends with streaming, timeout, and model fallback.
+  - Providers: `gemini` (default, backward compatible), `openai`/`openai_compatible`, `openrouter`, `ollama`/local (OpenAI-compatible HTTP).
+  - Config: `AI_PROVIDER`, `AI_API_KEY`, `AI_MODEL`, `AI_BASE_URL`, `AI_TIMEOUT`, `AI_FALLBACK_MODEL` (legacy `GEMINI_API_KEY`/`RECAP_MODEL` still supported).
+- **Draft/pre-game tools** (`src/engine/draft.py`, API + UI):
+  - Team comp warnings (estimated AD/AP/mixed damage, frontline/engage, vs-notes).
+  - Ban suggestions (role/pool/threat-aware).
+  - “What should I play?” (prefers owned champs, good vs locked enemy comp, high global/personal WR, mastery hints).
+  - Adaptive build option appended when enemy comp is known (derived from seed situational items; WR not fabricated).
+  - **AI Draft Coach** and **AI Build Explain** (uses configured provider, streamed in UI).
+- LCU champion mastery list support for mastery-aware recommendations.
+- `.env.example`/README updated for AI provider configuration and draft features.
+
+### Changed
+- `PostGameAnalyzer` refactored to use the AI provider interface (keeps recap streaming, stats persistence, and fallback behavior).
+- `/api/build/...` accepts `enemies` to include adaptive build options.
+- Settings runtime reports `ai_provider`/`ai_model`/`ai_configured`.
+
 ## [0.2.0] - 2026-05 (personal companion overhaul)
 
 ### Added

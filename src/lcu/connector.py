@@ -169,6 +169,16 @@ class LCUConnector:
             return None
         return data
 
+    def get_champion_masteries(self, puuid, limit=30):
+        if not puuid:
+            return []
+        data = self.get(f"/lol-champion-mastery/v1/{puuid}/champion-masteries")
+        if not isinstance(data, list):
+            data = self.get(f"/lol-champion-mastery/v4/{puuid}/champion-masteries") or []
+        if not isinstance(data, list):
+            return []
+        return data[: max(1, int(limit or 30))]
+
     def get_owned_champions(self):
         # Best-effort: endpoint/shape varies by client version.
         data = self.get("/lol-champions/v1/owned-champions-minimal")

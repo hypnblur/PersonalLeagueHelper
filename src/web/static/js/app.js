@@ -187,7 +187,9 @@ async function lockChampion(champion, role) {
   recHeader.textContent = 'YOUR BUILD — 3 OPTIONS (highest WR)';
   document.getElementById("build-panel").classList.add("hidden");
   try {
-    const resp = await fetch(`/api/build/${encodeURIComponent(champion)}/${encodeURIComponent(role)}`);
+    const enemies = getInputValues(".enemy-input");
+    const params = new URLSearchParams(); enemies.forEach(e => params.append("enemies", e));
+    const resp = await fetch(`/api/build/${encodeURIComponent(champion)}/${encodeURIComponent(role)}?${params.toString()}`);
     const data = await resp.json();
     if (data.error) { unlockChampion(); return; }
     selectedBuildData = data;
@@ -409,12 +411,12 @@ async function loadSettings() {
     const r = d.runtime || {};
     document.getElementById('settings-view').innerHTML = `
       <div class="settings-grid">
-        <div class="setting"><strong>Gemini API key</strong><div>${r.has_gemini_key ? 'Configured via environment' : 'Not set (set GEMINI_API_KEY)'}</div></div>
-        <div class="setting"><strong>Recap model</strong><div>${esc(r.recap_model||'')}</div></div>
+        <div class="setting"><strong>AI provider</strong><div>${esc(r.ai_provider||'gemini')} ${r.ai_configured ? '· configured' : '· not configured'}</div></div>
+        <div class="setting"><strong>AI model</strong><div>${esc(r.ai_model||r.recap_model||'')}</div></div>
         <div class="setting"><strong>Safe rune import</strong><div>${r.safe_rune_import ? 'Enabled' : 'Disabled'} (prefix: ${esc(r.rune_page_prefix||'LA:')})</div></div>
         <div class="setting"><strong>Data Dragon patch</strong><div>${esc(document.getElementById('patch-badge').textContent||'')}</div></div>
       </div>
-      <p class="muted small">Configure behavior in <code>.env</code> or environment variables: <code>GEMINI_API_KEY</code>, <code>RECAP_MODEL</code>, <code>WEB_HOST</code>, <code>WEB_PORT</code>, <code>OPEN_BROWSER</code>, <code>SAFE_RUNE_IMPORT</code>, <code>RUNE_PAGE_PREFIX</code>.</p>`;
+      <p class="muted small">Configure in <code>.env</code>: <code>AI_PROVIDER</code> (gemini/openai/openrouter/ollama), <code>AI_API_KEY</code> (or <code>GEMINI_API_KEY</code>), <code>AI_MODEL</code>, <code>AI_BASE_URL</code> (for OpenAI-compatible/Ollama), <code>AI_TIMEOUT</code>. Legacy <code>GEMINI_API_KEY</code>/<code>RECAP_MODEL</code> still work.</p>`;
   } catch(e) {}
 }
 
@@ -454,4 +456,72 @@ function renderPlayerIntel(rows, phase) {
 }
 function fmtPoints(n){ if(n==null) return ''; if(n>=1e6) return (n/1e6).toFixed(1)+'M'; if(n>=1e3) return Math.round(n/1e3)+'k'; return String(n); }
 
-window.lockChampion = lockChampion; window.unlockChampion = unlockChampion; window.importRunes = importRunes; window.importSelectedRunes = importSelectedRunes; window.selectBuildOption = selectBuildOption; window.reanalyze = reanalyze; window.switchTab = switchTab; window.refreshCompanion = refreshCompanion; window.openSettings = openSettings; window.savePool = savePool; window.removePool = removePool; window.saveNote = saveNote; window.deleteNote = deleteNote;
+
+function draftParams() {
+  const role = selectedRole;
+  const allies = getInputValues('.ally-input');
+  const enemies = getInputValues('.enemy-input');
+  const p = new URLSearchParams(); p.set('role', role);
+  allies.forEach(a => p.append('allies', a)); enemies.forEach(e => p.append('enemies', e));
+  return { role, allies, enemies, qs: p.toString() };
+}
+function setDraftOutput(html) { const el = document.getElementById('draft-output'); if (el) el.innerHTML = html; }
+async function runDraftAnalysis() {
+  const { qs } = draftParams();
+  setDraftOutput('Analyzing team comps...');
+  try {
+    const d = await (await fetch('/api/draft/analysis?' + qs)).json();
+    const render = (c) => `<div><strong>${esc(c.label||'')}</strong>: ${esc((c.champs||[]).join(', ')||'none')}<br><span class="muted small">Damage (est): AD ${c.damage?.AD||0}, AP ${c.damage?.AP||0}, Mixed ${c.damage?.Mixed||0}, Utility ${c.damage?.Utility||0} · Frontline ${c.frontline||0} · Engage ${c.engage||0}</span>${(c.warnings||[]).map(w=>`<div class="warn">⚠ ${esc(w)}</div>`).join('')}${(c.notes||[]).map(n=>`<div class="note-ok">• ${esc(n)}</div>`).join('')}</div>`;
+    setDraftOutput(`<div class="draft-grid">${render(d.enemy||{})}${render(d.ally||{})}</div>${(d.vs||[]).length?`<div style="margin-top:8px">${(d.vs||[]).map(n=>`<div class="note-ok">→ ${esc(n)}</div>`).join('')}</div>`:''}<div class="muted small" style="margin-top:6px">${esc(d.enemy?.disclaimer||'')}</div>`);
+  } catch(e) { setDraftOutput('Failed to analyze team comp.'); }
+}
+async function runBanSuggestions() {
+  const { qs } = draftParams();
+  setDraftOutput('Loading ban suggestions...');
+  try {
+    const d = await (await fetch('/api/draft/bans?' + qs)).json();
+    if (!d.length) { setDraftOutput('No ban suggestions (need role/pool context).'); return; }
+    setDraftOutput(`<strong>Ban ideas</strong> (threats for your role/pool):<div class="draft-list">${d.map(b=>`<div class="draft-row"><strong>${esc(b.champion)}</strong> <span class="muted small">(${esc(b.tier||'?')})</span><div class="muted small">${esc((b.reasons||[]).join(' · '))}</div></div>`).join('')}</div>`);
+  } catch(e) { setDraftOutput('Failed to load ban suggestions.'); }
+}
+async function runWhatShouldIPlay() {
+  const { qs } = draftParams();
+  setDraftOutput('Finding best owned picks vs locked enemies...');
+  try {
+    const d = await (await fetch('/api/draft/what-to-play?' + qs)).json();
+    if (!d.length) { setDraftOutput('No picks found. Add enemies/role or connect client for ownership.'); return; }
+    setDraftOutput(`<strong>What you should play</strong> (owned + good vs enemy comp + high WR):<div class="draft-list">${d.map((r,i)=>`<div class="draft-row clickable" onclick="lockChampion('${escAttr(r.champion)}')"><strong>${i+1}. ${esc(r.champion)}</strong> <span class="muted small">score ${Math.round(r.score||0)}</span><div class="muted small">${esc((r.reasons||[]).slice(0,4).join(' · '))}${r.note?` · ${esc(r.note)}`:''}</div></div>`).join('')}</div>`);
+  } catch(e) { setDraftOutput('Failed to load picks.'); }
+}
+let draftAiPoll = null;
+async function runDraftCoach() {
+  const { role, allies, enemies } = draftParams();
+  setDraftOutput('Starting AI draft coach...');
+  try {
+    await fetch('/api/draft/coach', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({role, allies, enemies})});
+    pollDraftAi();
+  } catch(e) { setDraftOutput('Failed to start AI draft coach.'); }
+}
+async function explainBuild() {
+  const { role, allies, enemies } = draftParams();
+  const build = selectedBuildOptions[selectedBuildOption || 0] || null;
+  if (!lockedChamp || !build) { setDraftOutput('Lock a champion/build first, then click AI Build Explain.'); return; }
+  setDraftOutput('Starting AI build explanation...');
+  try {
+    await fetch('/api/build-explain', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({champion: lockedChamp, role, allies, enemies, build})});
+    pollDraftAi();
+  } catch(e) { setDraftOutput('Failed to start build explanation.'); }
+}
+function pollDraftAi() {
+  if (draftAiPoll) clearInterval(draftAiPoll);
+  draftAiPoll = setInterval(async () => {
+    try {
+      const d = await (await fetch('/api/draft/ai')).json();
+      if (d.status === 'analyzing') setDraftOutput(`<strong>AI</strong> <span class="muted small">${esc(d.model||'')}</span><div style="white-space:pre-wrap;margin-top:6px">${esc(d.text||'...')}${d.text?'▍':''}</div>`);
+      else if (d.status === 'done') { clearInterval(draftAiPoll); draftAiPoll=null; setDraftOutput(`<strong>AI Draft/Build Advice</strong> <span class="muted small">${esc(d.model||'')}</span><div style="white-space:pre-wrap;margin-top:6px">${esc(d.text||'')}</div>`); }
+      else if (d.status === 'error') { clearInterval(draftAiPoll); draftAiPoll=null; setDraftOutput(`<strong>AI error:</strong> ${esc(d.text||'Unknown error')}`); }
+    } catch(e) {}
+  }, 1000);
+}
+
+window.lockChampion = lockChampion; window.unlockChampion = unlockChampion; window.importRunes = importRunes; window.importSelectedRunes = importSelectedRunes; window.selectBuildOption = selectBuildOption; window.reanalyze = reanalyze; window.switchTab = switchTab; window.refreshCompanion = refreshCompanion; window.openSettings = openSettings; window.savePool = savePool; window.removePool = removePool; window.saveNote = saveNote; window.deleteNote = deleteNote; window.runDraftAnalysis=runDraftAnalysis; window.runBanSuggestions=runBanSuggestions; window.runWhatShouldIPlay=runWhatShouldIPlay; window.runDraftCoach=runDraftCoach; window.explainBuild=explainBuild;

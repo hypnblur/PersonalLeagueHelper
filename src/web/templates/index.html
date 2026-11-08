@@ -36,6 +36,21 @@
     <div id="phase-badge" class="badge phase-none">LOBBY</div>
   </div>
 
+  <!-- Draft tools -->
+  <div class="panel draft-tools-panel">
+    <div class="panel-header-row">
+      <h2>DRAFT / PRE-GAME</h2>
+      <div class="inline-form" style="margin:0">
+        <button class="btn-small" onclick="runDraftAnalysis()">Team Comp</button>
+        <button class="btn-small" onclick="runBanSuggestions()">Ban Ideas</button>
+        <button class="btn-gold" onclick="runWhatShouldIPlay()">What Should I Play</button>
+        <button class="btn-small" onclick="runDraftCoach()">AI Draft Coach</button>
+        <button class="btn-small" onclick="explainBuild()">AI Build Explain</button>
+      </div>
+    </div>
+    <div id="draft-output" class="draft-output muted small">Use locked-in enemies for best results. “What Should I Play” prefers owned champs, good matchups vs enemy comp, and high WR (global + your history).</div>
+  </div>
+
   <!-- Teams + Recommendations -->
   <div class="columns">
     <div class="panel team-panel">

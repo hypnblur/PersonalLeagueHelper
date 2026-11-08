@@ -33,7 +33,8 @@ class WebServer:
         @self.flask.route("/api/build/<champion>")
         @self.flask.route("/api/build/<champion>/<role>")
         def api_build(champion, role=None):
-            return jsonify(self.state.build_info(champion, role))
+            enemies = [e for e in request.args.getlist("enemies") if e]
+            return jsonify(self.state.build_info(champion, role, enemies=enemies))
 
         @self.flask.route("/api/champions")
         def api_champions():
@@ -79,23 +80,65 @@ class WebServer:
         def api_settings():
             if request.method == "POST":
                 body = request.get_json(silent=True) or {}
-                # Only allow safe, non-secret UI settings to be persisted.
                 allowed = {"default_role", "show_insights", "auto_open_build", "theme"}
                 for k, v in body.items():
                     if k in allowed:
                         self.state.db.set_setting(k, v)
                 return jsonify({"ok": True, "settings": self.state.db.all_settings()})
-            from config import GEMINI_API_KEY, RECAP_MODEL, RUNE_PAGE_PREFIX, SAFE_RUNE_IMPORT
-
+            from config import AI_MODEL, AI_PROVIDER, GEMINI_API_KEY, RECAP_MODEL, RUNE_PAGE_PREFIX, SAFE_RUNE_IMPORT
+            ai_ok = False
+            try:
+                from src.engine.ai_provider import get_provider
+                ai_ok = get_provider().is_configured()
+            except Exception:
+                ai_ok = bool(GEMINI_API_KEY)
             return jsonify({
                 "stored": self.state.db.all_settings(),
                 "runtime": {
-                    "has_gemini_key": bool(GEMINI_API_KEY),
-                    "recap_model": RECAP_MODEL,
+                    "has_gemini_key": bool(GEMINI_API_KEY),  # legacy
+                    "recap_model": RECAP_MODEL,              # legacy
+                    "ai_provider": AI_PROVIDER,
+                    "ai_model": AI_MODEL,
+                    "ai_configured": ai_ok,
                     "safe_rune_import": SAFE_RUNE_IMPORT,
                     "rune_page_prefix": RUNE_PAGE_PREFIX,
                 },
             })
+
+        @self.flask.route("/api/draft/analysis")
+        def api_draft_analysis():
+            role = request.args.get("role", "")
+            allies = [a for a in request.args.getlist("allies") if a]
+            enemies = [e for e in request.args.getlist("enemies") if e]
+            return jsonify(self.state.draft_analysis(role, allies, enemies))
+
+        @self.flask.route("/api/draft/bans")
+        def api_draft_bans():
+            role = request.args.get("role", "")
+            allies = [a for a in request.args.getlist("allies") if a]
+            enemies = [e for e in request.args.getlist("enemies") if e]
+            return jsonify(self.state.ban_suggestions(role, allies, enemies))
+
+        @self.flask.route("/api/draft/what-to-play")
+        def api_what_to_play():
+            role = request.args.get("role", "")
+            allies = [a for a in request.args.getlist("allies") if a]
+            enemies = [e for e in request.args.getlist("enemies") if e]
+            return jsonify(self.state.what_should_i_play(role, allies, enemies))
+
+        @self.flask.route("/api/draft/coach", methods=["POST"])
+        def api_draft_coach():
+            body = request.get_json(silent=True) or {}
+            return jsonify(self.state.run_draft_ai("coach", body))
+
+        @self.flask.route("/api/draft/ai")
+        def api_draft_ai():
+            return jsonify(getattr(self.state, "_draft_ai", {"status": "idle"}))
+
+        @self.flask.route("/api/build-explain", methods=["POST"])
+        def api_build_explain():
+            body = request.get_json(silent=True) or {}
+            return jsonify(self.state.run_draft_ai("build_explain", body))
 
         @self.flask.route("/api/pool", methods=["GET", "POST", "DELETE"])
         def api_pool():
