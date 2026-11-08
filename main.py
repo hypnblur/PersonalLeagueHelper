@@ -155,6 +155,7 @@ class AppState:
                     "champion": self.dragon.champion_name(m.get("championId")) if m.get("championId") else "",
                     "team": "ally" if team_name == "teamOne" else "enemy",  # best-effort; corrected below if possible
                     "is_me": bool(me_puuid and puuid and puuid == me_puuid),
+                    "party_id": m.get("partyId") or m.get("teamParticipantId") or "",
                 }
         # playerChampionSelections often has better champion mapping
         for sel in game_data.get("playerChampionSelections") or []:
@@ -180,6 +181,49 @@ class AppState:
                 p["team"] = "ally" if p.get("team") == "enemy" else "enemy"
                 p["is_me"] = bool(me_puuid and p.get("puuid") and p.get("puuid") == me_puuid)
         return list(by_key.values())
+
+    def _annotate_parties(self, participants, lobby=None):
+        """Best-effort premade/party hints. Enemies are usually hidden by the client."""
+        participants = [dict(p) for p in (participants or [])]
+        lobby_members = []
+        if isinstance(lobby, dict):
+            lobby_members = lobby.get("members") or []
+            if not lobby_members and isinstance(lobby.get("localMember"), dict):
+                lobby_members = [lobby.get("localMember")]
+        lobby_ids = set()
+        for m in lobby_members:
+            if not isinstance(m, dict):
+                continue
+            if m.get("puuid"):
+                lobby_ids.add(("puuid", m.get("puuid")))
+            if m.get("summonerId"):
+                lobby_ids.add(("sid", int(m.get("summonerId") or 0)))
+        lobby_party = len(lobby_members) > 1
+
+        # explicit partyId grouping if present
+        groups = {}
+        for p in participants:
+            pid = p.get("party_id") or p.get("partyId")
+            if pid:
+                groups.setdefault(str(pid), []).append(p)
+
+        for p in participants:
+            is_me = bool(p.get("is_me"))
+            in_lobby_party = (("puuid", p.get("puuid")) in lobby_ids) or (("sid", int(p.get("summoner_id") or 0)) in lobby_ids)
+            pid = p.get("party_id") or p.get("partyId")
+            if pid and len(groups.get(str(pid), [])) > 1:
+                p["party"] = {"status": "premade", "label": f"Premade ({len(groups[str(pid)])})", "detail": "Detected from game data"}
+            elif in_lobby_party and lobby_party:
+                p["party"] = {"status": "premade", "label": f"Your party ({len(lobby_members)})", "detail": "Detected from lobby"}
+            elif in_lobby_party and not lobby_party and is_me:
+                p["party"] = {"status": "solo", "label": "Solo (lobby)", "detail": "No lobby party members detected"}
+            elif p.get("team") == "enemy":
+                p["party"] = {"status": "hidden", "label": "Hidden/unknown", "detail": "Enemy premade status is usually not exposed"}
+            elif is_me:
+                p["party"] = {"status": "unknown", "label": "Unknown", "detail": "Not enough info exposed"}
+            else:
+                p["party"] = {"status": "unknown", "label": "Unknown", "detail": "Best-effort; client may not expose ally premade status"}
+        return participants
 
     def build_info(self, champion, role=None, enemies=None):
         champ = self.store.get(champion)
@@ -424,14 +468,16 @@ def monitor_loop(app_state):
                     gf = app_state.lcu.get_gameflow_session()
                     gf_participants = app_state._participants_from_gameflow(gf)
                     if gf_participants:
-                        # merge, preferring entries with puuid/name/champion
                         merged = {}
                         for p in participants + gf_participants:
                             k = p.get("puuid") or (f"sid:{p.get('summoner_id')}" if p.get("summoner_id") else None) or p.get("name") or f"cid:{p.get('champion_id')}:{p.get('team')}"
                             cur = merged.get(k, {})
-                            cur.update({kk: vv for kk, vv in p.items() if vv not in (None, "", 0) or kk in ("is_me", "team")})
+                            cur.update({kk: vv for kk, vv in p.items() if vv not in (None, "", 0) or kk in ("is_me", "team", "party_id", "partyId")})
                             merged[k] = cur
                         participants = list(merged.values())
+                if phase in ("Lobby", "Matchmaking", "ReadyCheck", "ChampSelect", "GameStart", "InProgress"):
+                    lobby = app_state.lcu.get_lobby()
+                    participants = app_state._annotate_parties(participants, lobby=lobby)
                 if app_state.intel and phase in ("ChampSelect", "GameStart", "InProgress"):
                     app_state.intel.set_participants(participants)
                 elif app_state.intel and phase in ("None", "Lobby", "Matchmaking", "ReadyCheck", "EndOfGame"):

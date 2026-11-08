@@ -437,12 +437,14 @@ function renderPlayerIntel(rows, phase) {
     const intel = r.intel || {};
     const rank = intel.rank;
     const mastery = intel.mastery;
+    const party = r.party || {};
     const rankText = rank ? (rank.text || rank.tier || 'Unranked') : (intel.status === 'pending' ? 'Loading…' : intel.status === 'disconnected' ? 'Client disconnected' : 'Unavailable');
     const wr = rank && rank.winrate != null ? `${rank.winrate}% WR (${rank.wins}W/${rank.losses}L)` : (rank && rank.tier && rank.tier !== 'UNRANKED' ? 'WR n/a' : '');
     const mast = mastery ? `M${mastery.level || '?'} · ${fmtPoints(mastery.points)} on ${esc(r.champion || 'pick')}` : (r.champion ? `Mastery loading/unavailable` : '');
     const name = r.name || (r.is_me ? 'You' : (r.team === 'enemy' ? 'Enemy' : 'Ally'));
+    const partyCls = party.status === 'premade' ? 'party-premade' : (party.status === 'hidden' ? 'party-hidden' : 'party-unknown');
     return `<div class="intel-card ${r.team === 'enemy' ? 'enemy' : 'ally'}${r.is_me ? ' me' : ''}">
-      <div class="intel-name">${esc(name)}${r.is_me ? ' <span class="muted">(You)</span>' : ''}</div>
+      <div class="intel-name">${esc(name)}${r.is_me ? ' <span class="muted">(You)</span>' : ''} <span class="party-badge ${partyCls}" title="${esc(party.detail||'Best-effort party detection')}">${esc(party.label || 'Unknown')}</span></div>
       <div class="intel-champ">${esc(r.champion || 'No pick yet')}</div>
       <div class="intel-rank">${esc(rankText)}</div>
       <div class="intel-sub">${esc(wr)}</div>

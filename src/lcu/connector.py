@@ -151,6 +151,9 @@ class LCUConnector:
     def get_gameflow_session(self):
         return self.get("/lol-gameflow/v1/session")
 
+    def get_lobby(self):
+        return self.get("/lol-lobby/v2/lobby")
+
     def get_summoner_by_id(self, summoner_id):
         if summoner_id in (None, "", 0):
             return None

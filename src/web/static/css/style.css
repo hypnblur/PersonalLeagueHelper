@@ -598,3 +598,8 @@ code { background: #00000033; padding: 1px 4px; border-radius: 3px; }
 .warn { color: #ffcf8a; font-size: 12px; margin-top: 4px; }
 .note-ok { color: #9fd3ff; font-size: 12px; margin-top: 4px; }
 @media (max-width: 900px) { .draft-grid { grid-template-columns: 1fr; } }
+
+/* Party badges (best-effort) */
+.party-badge { font-size:10px; padding:1px 6px; border-radius:10px; border:1px solid var(--border); vertical-align:middle; margin-left:4px; }
+.party-premade { color:#ffd38a; border-color:#7a5a2a; background:#2a2114; }
+.party-hidden, .party-unknown { color:var(--text-muted); }
