@@ -603,3 +603,7 @@ code { background: #00000033; padding: 1px 4px; border-radius: 3px; }
 .party-badge { font-size:10px; padding:1px 6px; border-radius:10px; border:1px solid var(--border); vertical-align:middle; margin-left:4px; }
 .party-premade { color:#ffd38a; border-color:#7a5a2a; background:#2a2114; }
 .party-hidden, .party-unknown { color:var(--text-muted); }
+
+.intel-spells { display:flex; align-items:center; gap:4px; margin: 2px 0 6px; flex-wrap:wrap; }
+.spell-icon { width:20px; height:20px; border-radius:3px; border:1px solid var(--border); vertical-align:middle; }
+.spell-name { font-size:11px; color:var(--text-muted); }

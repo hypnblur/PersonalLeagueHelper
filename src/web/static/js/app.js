@@ -438,14 +438,17 @@ function renderPlayerIntel(rows, phase) {
     const rank = intel.rank;
     const mastery = intel.mastery;
     const party = r.party || {};
+    const spells = Array.isArray(r.spells) ? r.spells : [];
     const rankText = rank ? (rank.text || rank.tier || 'Unranked') : (intel.status === 'pending' ? 'Loading…' : intel.status === 'disconnected' ? 'Client disconnected' : 'Unavailable');
     const wr = rank && rank.winrate != null ? `${rank.winrate}% WR (${rank.wins}W/${rank.losses}L)` : (rank && rank.tier && rank.tier !== 'UNRANKED' ? 'WR n/a' : '');
     const mast = mastery ? `M${mastery.level || '?'} · ${fmtPoints(mastery.points)} on ${esc(r.champion || 'pick')}` : (r.champion ? `Mastery loading/unavailable` : '');
     const name = r.name || (r.is_me ? 'You' : (r.team === 'enemy' ? 'Enemy' : 'Ally'));
     const partyCls = party.status === 'premade' ? 'party-premade' : (party.status === 'hidden' ? 'party-hidden' : 'party-unknown');
+    const spellsHtml = spells.length ? `<div class="intel-spells">${spells.map(s => s.icon ? `<img class="spell-icon" src="${esc(s.icon)}" alt="${esc(s.name||'')}" title="${esc(s.name||'Summoner Spell')}">` : `<span class="spell-name" title="${esc(s.name||'')}">${esc(s.name||'?')}</span>`).join('')}<span class="muted small">${spells.map(s=>esc(s.name||'')).join(' + ')}</span></div>` : '';
     return `<div class="intel-card ${r.team === 'enemy' ? 'enemy' : 'ally'}${r.is_me ? ' me' : ''}">
       <div class="intel-name">${esc(name)}${r.is_me ? ' <span class="muted">(You)</span>' : ''} <span class="party-badge ${partyCls}" title="${esc(party.detail||'Best-effort party detection')}">${esc(party.label || 'Unknown')}</span></div>
       <div class="intel-champ">${esc(r.champion || 'No pick yet')}</div>
+      ${spellsHtml}
       <div class="intel-rank">${esc(rankText)}</div>
       <div class="intel-sub">${esc(wr)}</div>
       <div class="intel-sub">${mast ? esc(mast) : ''}</div>

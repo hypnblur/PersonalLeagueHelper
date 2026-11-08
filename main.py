@@ -96,6 +96,7 @@ class AppState:
             pos = m.get("assignedPosition", "")
             if is_me:
                 my_pos = pos
+            s1, s2 = m.get("spell1Id") or 0, m.get("spell2Id") or 0
             my_team.append({
                 "champion": self.dragon.champion_name(cid) if cid else "",
                 "champion_id": cid,
@@ -106,10 +107,14 @@ class AppState:
                 "puuid": m.get("puuid") or "",
                 "name": m.get("name") or m.get("summonerName") or "",
                 "team": "ally",
+                "spell1_id": s1,
+                "spell2_id": s2,
+                "spells": self.dragon.resolve_summoner_spells(s1, s2),
             })
 
         for m in session.get("theirTeam", []):
             cid = m.get("championId", 0) or m.get("championPickIntent", 0)
+            s1, s2 = m.get("spell1Id") or 0, m.get("spell2Id") or 0
             enemy_team.append({
                 "champion": self.dragon.champion_name(cid) if cid else "",
                 "champion_id": cid,
@@ -119,6 +124,9 @@ class AppState:
                 "puuid": m.get("puuid") or "",
                 "name": m.get("name") or m.get("summonerName") or "",
                 "team": "enemy",
+                "spell1_id": s1,
+                "spell2_id": s2,
+                "spells": self.dragon.resolve_summoner_spells(s1, s2),
             })
 
         return {"my_team": my_team, "enemy_team": enemy_team, "my_position": my_pos}
@@ -130,6 +138,16 @@ class AppState:
             if p.get("puuid") or p.get("summoner_id") or p.get("name") or p.get("champion_id"):
                 players.append(p)
         return players
+
+    def _spell_ids_from(self, obj):
+        if not isinstance(obj, dict):
+            return 0, 0
+        s1 = obj.get("spell1Id") or obj.get("summonerSpell1Id") or obj.get("summoner1Id") or 0
+        s2 = obj.get("spell2Id") or obj.get("summonerSpell2Id") or obj.get("summoner2Id") or 0
+        try:
+            return int(s1 or 0), int(s2 or 0)
+        except Exception:
+            return 0, 0
 
     def _participants_from_gameflow(self, gameflow):
         if not isinstance(gameflow, dict):
@@ -147,6 +165,7 @@ class AppState:
                 key = puuid or (f"sid:{sid}" if sid else None) or m.get("summonerName") or m.get("summonerInternalName")
                 if not key:
                     continue
+                s1, s2 = self._spell_ids_from(m)
                 by_key[key] = {
                     "puuid": puuid,
                     "summoner_id": sid,
@@ -156,19 +175,26 @@ class AppState:
                     "team": "ally" if team_name == "teamOne" else "enemy",  # best-effort; corrected below if possible
                     "is_me": bool(me_puuid and puuid and puuid == me_puuid),
                     "party_id": m.get("partyId") or m.get("teamParticipantId") or "",
+                    "spell1_id": s1,
+                    "spell2_id": s2,
+                    "spells": self.dragon.resolve_summoner_spells(s1, s2),
                 }
-        # playerChampionSelections often has better champion mapping
+        # playerChampionSelections often has better champion/spell mapping
         for sel in game_data.get("playerChampionSelections") or []:
             if not isinstance(sel, dict):
                 continue
             puuid = sel.get("puuid") or ""
             sid = sel.get("summonerInternalName") or ""  # not always present; best-effort
+            s1, s2 = self._spell_ids_from(sel)
             # try match by puuid
             for k, p in by_key.items():
                 if puuid and p.get("puuid") == puuid:
                     cid = sel.get("championId") or p.get("champion_id")
                     p["champion_id"] = cid
                     p["champion"] = self.dragon.champion_name(cid) if cid else p.get("champion", "")
+                    if s1 or s2:
+                        p["spell1_id"], p["spell2_id"] = s1, s2
+                        p["spells"] = self.dragon.resolve_summoner_spells(s1, s2)
         # Try to correct ally/enemy using local player's team if present
         my_team_key = None
         for k, p in by_key.items():

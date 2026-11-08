@@ -15,6 +15,8 @@ class DataDragon:
         self.items = {}
         self.runes = {}
         self.rune_lookup = {}
+        self.summoner_spells = {}
+        self.spell_by_key = {}  # numeric key (e.g. "4") -> spell data
 
     def initialize(self):
         print("[DataDragon] Fetching latest game data...")
@@ -25,7 +27,9 @@ class DataDragon:
         self.items = self._fetch("item.json", "items.json")
         self.runes = self._fetch_runes()
         self._build_rune_lookup()
-        print(f"[DataDragon] Loaded {len(self.champions)} champions, {len(self.items)} items")
+        self.summoner_spells = self._fetch("summoner.json", "summoner_spells.json")
+        self._build_summoner_spell_index()
+        print(f"[DataDragon] Loaded {len(self.champions)} champions, {len(self.items)} items, {len(self.summoner_spells)} summoner spells")
         return self
 
     def _fetch_version(self):
@@ -127,6 +131,61 @@ class DataDragon:
             if idata["name"].lower() == name_lower:
                 return int(iid)
         return None
+
+    def _build_summoner_spell_index(self):
+        self.spell_by_key = {}
+        for sid, sdata in (self.summoner_spells or {}).items():
+            if not isinstance(sdata, dict):
+                continue
+            key = str(sdata.get("key") or "")
+            if key:
+                self.spell_by_key[key] = {"id": sid, **sdata}
+
+    def summoner_spell(self, spell_id):
+        """Resolve a summoner spell by numeric id/key (e.g. 4, '4') or DDragon id."""
+        if spell_id in (None, "", 0, "0"):
+            return None
+        s = self.spell_by_key.get(str(spell_id))
+        if s:
+            return s
+        if isinstance(self.summoner_spells, dict):
+            s = self.summoner_spells.get(str(spell_id))
+            if s:
+                return {"id": str(spell_id), **s} if isinstance(s, dict) else None
+        return None
+
+    def summoner_spell_name(self, spell_id):
+        s = self.summoner_spell(spell_id)
+        if s:
+            return s.get("name") or f"Spell {spell_id}"
+        if spell_id in (None, "", 0, "0"):
+            return ""
+        return f"Spell {spell_id}"
+
+    def summoner_spell_icon(self, spell_id):
+        s = self.summoner_spell(spell_id)
+        if not s:
+            return ""
+        img = (s.get("image") or {}).get("full")
+        if not img:
+            return ""
+        return f"{RIOT_DDRAGON}/cdn/{self.version}/img/spell/{img}"
+
+    def resolve_summoner_spells(self, spell1_id, spell2_id):
+        """Return compact spell info for two spell IDs (best-effort)."""
+        def one(sid):
+            s = self.summoner_spell(sid)
+            if not s:
+                return None
+            return {
+                "id": int(s.get("key") or sid) if str(s.get("key") or sid).isdigit() else sid,
+                "key": s.get("key"),
+                "name": s.get("name"),
+                "ddragon_id": s.get("id"),
+                "icon": self.summoner_spell_icon(sid),
+            }
+        spells = [x for x in (one(spell1_id), one(spell2_id)) if x and x.get("name")]
+        return spells
 
     def rune_icon(self, rune_name):
         rune = self.rune_lookup.get(rune_name)

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1] - summoner spells intake
+
+### Added
+- **Summoner spell intake (Data Dragon)**: fetch/cache `summoner.json`, build numeric spell-key lookup, and expose `summoner_spell_name` / `summoner_spell_icon` / `resolve_summoner_spells` helpers (`src/data/dragon.py`).
+- **LCU spell capture (best-effort)**: capture `spell1Id`/`spell2Id` (and common variants) from champ select session and gameflow session participants (`main.py`).
+- **Lobby/Loading Intel UI**: display detected summoner spell icons/names per player when available (hidden/unavailable depending on phase/mode/privacy) (`src/web/templates/index.html`, `src/web/static/js/app.js`, `src/web/static/css/style.css`).
+
 ## [0.3.0] - draft/pre-game tools & AI provider refactor
 
 ### Added
